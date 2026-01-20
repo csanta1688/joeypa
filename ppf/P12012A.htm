@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Language" content="zh-tw">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="GENERATOR" content="Microsoft FrontPage 6.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<title>編號:</title>
+
+<base target="_self">
+
+<style>
+<!--
+BODY{
+scrollbar-face-color:#F6F6FF;
+scrollbar-arrow-color:#3CA0FF;
+scrollbar-track-color:#ffffff;
+scrollbar-shadow-color:#F6F6FF;
+scrollbar-highlight-color:#F6F6FF;
+scrollbar-3dlight-color:#3CA0FF;
+scrollbar-darkshadow-Color:#3CA0FF;
+}
+-->
+</style>
+
+<script>
+const SITE_FROM_LANG = "zh-TW";
+const SITE_LANG_KEY  = "site_lang";
+const SITE_LANG_LIST = "en,ja,ko,zh-CN,fr,de,es,vi,th,id,ar,fa,tr,zh-TW";
+
+function setGoogTransCookie(fromLang, toLang) {
+  const v = "/" + fromLang + "/" + toLang;
+  document.cookie = "googtrans=" + v + ";path=/";
+  document.cookie = "googtrans=" + v + ";path=/;SameSite=Lax";
+}
+function clearGoogTransCookie() {
+  document.cookie = "googtrans=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
+  document.cookie = "googtrans=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;SameSite=Lax";
+}
+function getCookie(name){
+  const m = document.cookie.match(new RegExp("(^|;\\s*)" + name + "=([^;]*)"));
+  return m ? decodeURIComponent(m[2]) : "";
+}
+function getLangFromGoogtransCookie(){
+  const gt = getCookie("googtrans");
+  const m = gt.match(/^\/([^\/]+)\/([^\/]+)$/);
+  if(!m) return null;
+  return { from: m[1], to: m[2] };
+}
+function getSavedLangSafe(){
+  const v = localStorage.getItem(SITE_LANG_KEY);
+  if (v && v !== "null" && v !== "undefined") return v;
+  const gt = getLangFromGoogtransCookie();
+  if (gt && gt.to) return gt.to;
+  return "original";
+}
+function isTranslatedNow(){
+  const de = document.documentElement;
+  return !!(
+    de.classList.contains("translated-ltr") ||
+    de.classList.contains("translated-rtl") ||
+    document.querySelector("iframe.goog-te-banner-frame") ||
+    document.querySelector(".goog-te-spinner-pos")
+  );
+}
+function forceApplyLangByCombo(){
+  const target = getSavedLangSafe();
+  if (target === "original") return;
+  let tries = 0;
+  const timer = setInterval(function(){
+    tries++;
+    const combo = document.querySelector("select.goog-te-combo");
+    if (combo) {
+      combo.value = target;
+      combo.dispatchEvent(new Event("change"));
+      clearInterval(timer);
+    }
+    if (tries > 50) clearInterval(timer);
+  }, 200);
+}
+(function autoApplySavedLang(){
+  const lang = getSavedLangSafe();
+  if (lang === "original") clearGoogTransCookie();
+  else setGoogTransCookie(SITE_FROM_LANG, lang);
+})();
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: SITE_FROM_LANG,
+    includedLanguages: SITE_LANG_LIST,
+    autoDisplay: false
+  }, 'google_translate_element');
+  forceApplyLangByCombo();
+}
+window.addEventListener("load", function(){
+  const lang = getSavedLangSafe();
+  if (lang === "original") clearGoogTransCookie();
+  else setGoogTransCookie(SITE_FROM_LANG, lang);
+  forceApplyLangByCombo();
+});
+(function ensureTranslateOnBack(){
+  function applyAgain(evt){
+    const lang = getSavedLangSafe();
+    if (lang === "original") {
+      sessionStorage.removeItem("gt_bfcache_reload_once_P12012A");
+      return;
+    }
+    setGoogTransCookie(SITE_FROM_LANG, lang);
+    forceApplyLangByCombo();
+    setTimeout(function(){
+      if (isTranslatedNow()) {
+        sessionStorage.removeItem("gt_bfcache_reload_once_P12012A");
+        return;
+      }
+      const key = "gt_bfcache_reload_once_P12012A";
+      if (evt && evt.persisted) {
+        if (sessionStorage.getItem(key)) return;
+        sessionStorage.setItem(key, "1");
+        location.reload();
+      }
+    }, 700);
+  }
+  window.addEventListener("pageshow", function(evt){ applyAgain(evt); });
+  document.addEventListener("visibilitychange", function(){
+    if (!document.hidden) applyAgain(null);
+  });
+})();
+</script>
+</head>
+
+<body>
+
+<div id="google_translate_element"
+     style="position:absolute;left:-9999px;top:0;width:1px;height:1px;overflow:hidden"></div>
+
+<div align="center">
+  <table border="1" cellpadding="0" cellspacing="0" bordercolor="#111111" width="622" id="AutoNumber1" height="334" bordercolorlight="#0000FF" bordercolordark="#0000FF">
+    <tr>
+      <td width="310" height="35" align="center"><font size="4" color="#FF0000">
+		<b>1200W電源轉換器</b></font></td>
+      <td width="310" height="35" align="center"><font size="4" color="#FF0000">
+		<b>編號︰P12012A</b></font></td>
+    </tr>
+    <tr>
+      <td width="310" height="38">
+      <p align="center">
+      <img border="0" src="ppf/inv1200.jpg" width="300" height="200"></td>
+      <td width="310" height="38">
+      <p style="margin-top: 10; margin-bottom: 10"><font color="#FF9900">&nbsp;&nbsp;&nbsp;
+      <b>產品特色</b></font></p>
+      <div align="center">
+        <center>
+        <table border="0" cellpadding="0" style="border-collapse: collapse" bordercolor="#111111" width="300" id="AutoNumber2" height="30">
+          <tr>
+            <td width="97%" height="37">
+            <p style="margin-top: 3; margin-bottom: 3">
+            <img border="0" src="ppf/@.bmp" width="16" height="16">
+            <span style="font-family: 新細明體">
+            全新設計電路，增加產品的實&nbsp;&nbsp; </span></p>
+			<p style="margin-top: 3; margin-bottom: 3">
+            <span style="font-family: 新細明體">&nbsp;&nbsp;&nbsp;&nbsp; 際功率以及穩定度。</span></p>
+            </td>
+          </tr>
+          <tr>
+            <td width="97%" height="37">
+            <p style="margin-top: 3; margin-bottom: 3">
+            <img border="0" src="ppf/@.bmp" width="16" height="16">
+            <span style="font-family: 新細明體">多種保護設計，保障您、蓄電</span></p>
+			<p style="margin-top: 3; margin-bottom: 3">
+            <span style="font-family: 新細明體">&nbsp;&nbsp;&nbsp;&nbsp; 池與機體的安全。</span></p>
+            </td>
+          </tr>
+          <tr>
+            <td width="97%" height="37">
+            <p style="margin-top: 3; margin-bottom: 3">
+            <img border="0" src="ppf/@.bmp" width="16" height="16"> 優惠價格，讓您小小付出，大</p>
+            <p style="margin-top: 3; margin-bottom: 3">&nbsp;&nbsp;&nbsp;&nbsp; 
+			大享受。</td>
+          </tr>
+          <tr>
+            <td width="97%" height="1">
+            <p style="margin-top: 3; margin-bottom: 3"></td>
+          </tr>
+        </table>
+        </center>
+      </div>
+      <p style="margin-top: 0; margin-bottom: 0">　</td>
+    </tr>
+    <tr>
+      <td width="627" height="184" colspan="2">
+      <p style="margin-top: 10; margin-bottom: 10"><font color="#FF9900">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      <b>&nbsp;產品規格</b></font></p>
+		<div align="center">
+			<table border="0" width="554" id="table1" cellspacing="4">
+				<tr>
+					<td colspan="3" bgcolor="#0000FF">
+					<p align="center">
+					<font face="Times New Roman" color="#FFFFFF">1200W電源轉換器(DC12V 
+					to AC110V)</font></td>
+				</tr>
+				<tr>
+					<td colspan="2" align="center" bgcolor="#0000FF">
+					<font face="標楷體" color="#FFFFFF">產品編號</font></td>
+					<td align="center" width="268" bgcolor="#0000FF">
+					<font face="Times New Roman" color="#FFFFFF">P12012A</font></td>
+				</tr>
+				<tr>
+					<td rowspan="6" width="69" align="center" bgcolor="#00FFFF">
+					<font face="標楷體">輸出</font></td>
+					<td width="195" align="right"><font face="標楷體">一般輸出功率</font></td>
+					<td width="268" align="center"><font face="Times New Roman">
+					330W ± 20W</font></td>
+				</tr>
+				<tr>
+					<td width="195" bgcolor="#CCFFFF" align="right">
+					<font face="標楷體">高峰輸出功率</font></td>
+					<td width="268" align="center" bgcolor="#CCFFFF">
+					<font face="Times New Roman">700W(100ms)</font></td>
+				</tr>
+				<tr>
+					<td width="195" align="right"><font face="標楷體">交流電壓</font></td>
+					<td width="268" align="center"><font face="Times New Roman">
+					100V/110V/200V/220V</font></td>
+				</tr>
+				<tr>
+					<td width="195" bgcolor="#CCFFFF" align="right">
+					<font face="標楷體">電壓調節範圍</font></td>
+					<td width="268" align="center" bgcolor="#CCFFFF">
+					<span lang="EN-US" style="font-size: 12.0pt; font-family: Times New Roman">
+					± 5%(NO LOAD)</span></td>
+				</tr>
+				<tr>
+					<td width="195" align="right"><font face="標楷體">電壓頻率</font></td>
+					<td width="268" align="center"><font face="Times New Roman">
+					60Hz </font>
+					<span lang="EN-US" style="font-size: 12.0pt; font-family: Times New Roman">
+					± 5%</span></td>
+				</tr>
+				<tr>
+					<td width="195" bgcolor="#CCFFFF" align="right">
+					<font face="標楷體">輸出波型</font></td>
+					<td width="268" align="center" bgcolor="#CCFFFF">
+					<span lang="EN-US" style="font-size: 12.0pt; font-family: Times New Roman">
+					Modified Sine Wave</span></td>
+				</tr>
+				<tr>
+					<td rowspan="6" width="69" align="center" bgcolor="#00FFFF">
+					<font face="標楷體">輸入</font></td>
+					<td width="195" align="right"><font face="標楷體">直流電壓</font></td>
+					<td width="268" align="center"><font face="Times New Roman">
+					12.5V</font></td>
+				</tr>
+				<tr>
+					<td width="195" bgcolor="#CCFFFF" align="right">
+					<font face="標楷體">電壓調節範圍</font></td>
+					<td width="268" align="center" bgcolor="#CCFFFF">
+					<span lang="en-us" style="font-size: 12.0pt; font-family: Times New Roman">
+					9.7</span><span style="font-size: 12.0pt; font-family: 新細明體">∼</span><span lang="EN-US" style="font-size: 12.0pt; font-family: Times New Roman">15V</span></td>
+				</tr>
+				<tr>
+					<td width="195" align="right"><font face="標楷體">輸入電流</font></td>
+					<td width="268" align="center"><font face="Times New Roman">
+					35A</font></td>
+				</tr>
+				<tr>
+					<td width="195" bgcolor="#CCFFFF" align="right">
+					<font face="標楷體">待機電流</font></td>
+					<td width="268" align="center" bgcolor="#CCFFFF">
+					<span style="FONT-SIZE: 12pt; FONT-FAMILY: 新細明體">﹤</span><span style="font-size: 12.0pt; font-family: Times New Roman">0.1A&nbsp; 
+					/&nbsp; </span>
+					<span style="FONT-SIZE: 12pt; FONT-FAMILY: 新細明體">﹤</span><span lang="EN-US" style="font-size: 12.0pt; font-family: Times New Roman">0.3A</span></td>
+				</tr>
+				<tr>
+					<td width="195" align="right"><font face="標楷體">效率</font></td>
+					<td width="268" align="center">
+					<span style="font-size: 12.0pt; font-family: 新細明體">﹥</span><span lang="EN-US" style="font-size: 12.0pt; font-family: Times New Roman">88%</span></td>
+				</tr>
+				<tr>
+					<td width="195" bgcolor="#CCFFFF" align="right">
+					<font face="標楷體">保險絲規格</font></td>
+					<td width="268" align="center" bgcolor="#CCFFFF">
+					<span lang="EN-US" style="font-size: 12.0pt; font-family: Times New Roman">
+					35A set</span></td>
+				</tr>
+				<tr>
+					<td rowspan="8" width="69" align="center" bgcolor="#00FFFF">
+					<font face="標楷體">安全</font></td>
+					<td width="195" align="right"><font face="標楷體">電池低電壓警告保護</font></td>
+					<td width="268" align="center">
+					<span lang="EN-US" style="font-size: 12.0pt; font-family: Times New Roman; color: black">
+					10.5 </span>
+					<span lang="EN-US" style="font-size: 12.0pt; font-family: Times New Roman">
+					± 0.5V</span></td>
+				</tr>
+				<tr>
+					<td width="195" bgcolor="#CCFFFF" align="right">
+					<font face="標楷體">電池低電壓斷電保護</font></td>
+					<td width="268" align="center" bgcolor="#CCFFFF">
+					<span lang="EN-US" style="font-size: 12.0pt; font-family: Times New Roman; color: black">
+					10.</span><span style="font-family: Times New Roman" lang="en-us">2</span><span lang="EN-US" style="font-size: 12.0pt; font-family: Times New Roman"> 
+					± 0.5V</span></td>
+				</tr>
+				<tr>
+					<td width="195" align="right"><font face="標楷體">電池二極反向保護</font></td>
+					<td width="268" align="center">
+					<span lang="EN-US" style="font-size: 12.0pt; font-family: Times New Roman">
+					BY FUSE</span></td>
+				</tr>
+				<tr>
+					<td width="195" bgcolor="#CCFFFF" align="right">
+					<font face="標楷體">過電壓保護</font></td>
+					<td width="268" align="center" bgcolor="#CCFFFF">
+					<span lang="EN-US" style="font-size: 12.0pt; font-family: Times New Roman">
+					15V UP</span></td>
+				</tr>
+				<tr>
+					<td width="195" align="right"><font face="標楷體">過溫度保護</font></td>
+					<td width="268" align="center">
+					<span lang="EN-US" style="font-size: 12.0pt; font-family: Times New Roman">
+					50<span lang="EN-US" style="font-family: 新細明體">℃</span></span><span lang="EN-US" style="font-size: 12.0pt; font-family: Times New Roman">
+					± 10</span><span style="font-size: 12.0pt; font-family: Times New Roman">％</span></td>
+				</tr>
+				<tr>
+					<td width="195" bgcolor="#CCFFFF" align="right">
+					<font face="標楷體">過負載保護</font></td>
+					<td width="268" align="center" bgcolor="#CCFFFF">
+					<span lang="EN-US" style="font-size: 12.0pt; font-family: Times New Roman; color: black">
+					SHUT OFF</span></td>
+				</tr>
+				<tr>
+					<td width="195" align="right"><font face="標楷體">輸出短路保護</font></td>
+					<td width="268" align="center">
+					<span lang="EN-US" style="font-size: 12.0pt; font-family: Times New Roman; color: black">
+					SHUT OFF</span></td>
+				</tr>
+				<tr>
+					<td width="195" bgcolor="#CCFFFF" align="right">
+					<font face="標楷體">系統冷卻裝置</font></td>
+					<td width="268" align="center" bgcolor="#CCFFFF">
+					<span lang="EN-US" style="font-size: 12.0pt; font-family: Times New Roman">
+					Auto Condition Fan</span></td>
+				</tr>
+				<tr>
+					<td rowspan="3" width="69" align="center" bgcolor="#00FFFF">
+					<font face="標楷體">外觀</font></td>
+					<td width="195" align="right"><font face="標楷體">尺寸</font></td>
+					<td width="268" align="center">
+					<span lang="EN-US" style="font-size: 12.0pt; font-family: Times New Roman">
+					175X125X70(mm)</span></td>
+				</tr>
+				<tr>
+					<td width="195" bgcolor="#CCFFFF" align="right">
+					<font face="標楷體">重量</font></td>
+					<td width="268" align="center" bgcolor="#CCFFFF">
+					<font face="Times New Roman">2(kg)</font></td>
+				</tr>
+				<tr>
+					<td width="195" align="right"><font face="標楷體">輸出插座數量</font></td>
+					<td width="268" align="center"><font face="Times New Roman">
+					2set</font></td>
+				</tr>
+			</table>
+		</div>
+		<p style="margin-top: 10; margin-bottom: 10">　</p>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+</body>
+</html>
