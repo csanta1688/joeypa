@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <link rel="shortcut icon" href="JPlogo.ico">
+  <title>JOEYPA 茂果科技首頁</title>
+
+  <!-- 強制所有連結同頁開啟（避免另開視窗） -->
+  <base target="_self">
+
+  <style>
+  body{
+    margin:0;
+    background:#fff;
+  }
+  .shakeimage{ position:relative }
+
+  /* =================================================
+     上方 icon 導覽列（多語系不跳・定版）
+     ================================================= */
+  .top-icons{
+    display: flex;
+    justify-content: center;
+    gap: 28px;
+    margin-top: 20px;
+    white-space: nowrap;
+  }
+
+  .icon-item{
+    width: 120px;          /* 固定寬度，語言不影響版型 */
+    text-align: center;
+    flex-shrink: 0;
+  }
+
+  .icon-item img{
+    width: 60px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+  }
+
+  .icon-text{
+    margin-top: 6px;
+    font-size: 14px;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  </style>
+
+  <script>
+    /* ===== Google 翻譯同步設定（index → main → 子頁）===== */
+    const SITE_FROM_LANG = "zh-TW"; // 主站內容是繁中，統一以 zh-TW 為 source
+    const SITE_LANG_KEY  = "site_lang";
+    const SITE_LANG_LIST = "en,ja,ko,zh-CN,fr,de,es,vi,th,id,ar,fa,tr,zh-TW";
+
+    function setGoogTransCookie(fromLang, toLang) {
+      const v = "/" + fromLang + "/" + toLang;
+      document.cookie = "googtrans=" + v + ";path=/";
+      document.cookie = "googtrans=" + v + ";path=/;SameSite=Lax";
+    }
+
+    function clearGoogTransCookie() {
+      document.cookie = "googtrans=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
+      document.cookie = "googtrans=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;SameSite=Lax";
+    }
+
+    function getCookie(name){
+      const m = document.cookie.match(new RegExp("(^|;\\s*)" + name + "=([^;]*)"));
+      return m ? decodeURIComponent(m[2]) : "";
+    }
+
+    function getLangFromGoogtransCookie(){
+      const gt = getCookie("googtrans"); // e.g. /zh-CN/ja 或 /zh-TW/ja
+      const m = gt.match(/^\/([^\/]+)\/([^\/]+)$/);
+      if(!m) return null;
+      return { from: m[1], to: m[2] };
+    }
+
+    // 語言來源：localStorage 優先，沒有就用 googtrans cookie（你目前很可能是這個狀態）
+    function getSavedLangSafe() {
+      const v = localStorage.getItem(SITE_LANG_KEY);
+      if (v && v !== "null" && v !== "undefined") return v;
+
+      const gt = getLangFromGoogtransCookie();
+      if (gt && gt.to) return gt.to;
+
+      return "original";
+    }
+
+    // 判斷目前頁面是否已被 Google Translate 套用（很關鍵）
+    function isTranslatedNow(){
+      const de = document.documentElement;
+      return !!(
+        de.classList.contains("translated-ltr") ||
+        de.classList.contains("translated-rtl") ||
+        document.querySelector("iframe.goog-te-banner-frame") ||
+        document.querySelector(".goog-te-spinner-pos")
+      );
+    }
+
+    // 一招：等待 goog-te-combo 出現後，指定語言並觸發 change（比單靠 cookie 穩）
+    function forceApplyLangByCombo(){
+      const target = getSavedLangSafe();
+      if (target === "original") return;
+
+      let tries = 0;
+      const maxTries = 50; // 10 秒
+      const timer = setInterval(function(){
+        tries++;
+
+        const combo = document.querySelector("select.goog-te-combo");
+        if (combo) {
+          combo.value = target;
+          combo.dispatchEvent(new Event("change"));
+          clearInterval(timer);
+          return;
+        }
+
+        if (tries >= maxTries) clearInterval(timer);
+      }, 200);
+    }
+
+    // 進頁先把 cookie 套好（讓 element.js 初始化時讀得到）
+    (function autoApplySavedLang(){
+      const lang = getSavedLangSafe();
+      if (lang === "original") clearGoogTransCookie();
+      else setGoogTransCookie(SITE_FROM_LANG, lang); // 統一改回 /zh-TW/xx
+    })();
+
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({
+        pageLanguage: SITE_FROM_LANG,
+        includedLanguages: SITE_LANG_LIST,
+        autoDisplay: false
+      }, 'google_translate_element');
+
+      // 初始化後立刻強制套用一次（確保第一次載入就翻）
+      forceApplyLangByCombo();
+    }
+
+    // 正常載入時保險再跑一次
+    window.addEventListener("load", function(){
+      const lang = getSavedLangSafe();
+      if (lang === "original") clearGoogTransCookie();
+      else setGoogTransCookie(SITE_FROM_LANG, lang);
+
+      forceApplyLangByCombo();
+    });
+
+    // 返回上一頁（bfcache restore）時：onload 不會跑，所以一定要用 pageshow
+    // 若 combo 套用後仍未翻譯 => 只 reload 一次（防止你遇到的「回來是原文」）
+    window.addEventListener("pageshow", function(evt){
+      const lang = getSavedLangSafe();
+      if (lang === "original") return;
+
+      // 先嘗試直接套用
+      setGoogTransCookie(SITE_FROM_LANG, lang);
+      forceApplyLangByCombo();
+
+      // 再檢查：若沒翻譯，做一次性 reload 修復 bfcache 還原不完整
+      setTimeout(function(){
+        if (isTranslatedNow()) return;
+
+        const key = "gt_bfcache_reload_once_main";
+        if (sessionStorage.getItem(key) === "1") {
+          // 已重整過一次，就不再重整，避免循環
+          return;
+        }
+        sessionStorage.setItem(key, "1");
+        location.reload();
+      }, 700);
+    });
+  </script>
+  <link rel="stylesheet" href="site_style.css">
+  <script src="site_ui.js" defer></script>
+</head>
+
+<body>
+
+<!-- ⚠️ 不用 display:none，避免翻譯不啟動 -->
+<div id="google_translate_element"
+     style="position:absolute; left:-9999px; top:0; width:1px; height:1px; overflow:hidden;"></div>
+
+<div align="center">
+<table border="0" cellpadding="0" cellspacing="0" width="650">
+
+<!-- ================= 上方 icon 導覽列 ================= -->
+<tr>
+<td align="center">
+
+<div class="top-icons">
+
+  <div class="icon-item">
+    <a href="profile.htm">
+      <img src="t1.gif" alt="公司簡介">
+      <div class="icon-text">公司簡介</div>
+    </a>
+  </div>
+
+  <div class="icon-item">
+    <a href="product.htm">
+      <img src="t2.gif" alt="產品介紹">
+      <div class="icon-text">產品介紹</div>
+    </a>
+  </div>
+
+  <div class="icon-item">
+    <a href="serout.htm">
+      <img src="t3.gif" alt="服務專區">
+      <div class="icon-text">服務專區</div>
+    </a>
+  </div>
+
+  <div class="icon-item">
+    <a href="news.htm">
+      <img src="t4.gif" alt="最新消息">
+      <div class="icon-text">最新消息</div>
+    </a>
+  </div>
+
+</div>
+
+</td>
+</tr>
+<!-- ================================================= -->
+
+<tr><td height="20">　</td></tr>
+
+<tr>
+<td align="center">
+<strong>【公告】</strong><br><br>
+-----------------------------------------------------------<br><br>
+-----------------------------------------------------------
+</td>
+</tr>
+
+<tr><td height="40">　</td></tr>
+
+<tr>
+<td align="center">
+<img src="e_e.gif" class="shakeimage"
+     onmouseover="init(this);rattleimage()"
+     onmouseout="stoprattle(this)"
+     width="468" height="60" alt="More Efficient">
+</td>
+</tr>
+
+<tr>
+<td align="center">
+<script>
+  var rector=3, stopit=0, a=1, shake=null;
+  function init(which){
+    stopit=0;
+    shake=which;
+    shake.style.left=0;
+    shake.style.top=0;
+  }
+  function rattleimage(){
+    if (stopit) return;
+    if (a==1) shake.style.top=(parseInt(shake.style.top)||0)+rector;
+    else if (a==2) shake.style.left=(parseInt(shake.style.left)||0)+rector;
+    else if (a==3) shake.style.top=(parseInt(shake.style.top)||0)-rector;
+    else shake.style.left=(parseInt(shake.style.left)||0)-rector;
+    a=(a<4)?a+1:1;
+    setTimeout(rattleimage,50);
+  }
+  function stoprattle(which){
+    stopit=1;
+    which.style.left=0;
+    which.style.top=0;
+  }
+</script>
+</td>
+</tr>
+
+<tr><td height="30">　</td></tr>
+
+<tr>
+<td align="center">
+<script>
+  var today=new Date();
+  var dayNames=["星期日","星期一","星期二","星期三","星期四","星期五","星期六"];
+  document.write(
+    "<b><font color=#900090 size=2>" +
+    "今天是 " +
+    (today.getMonth()+1)+" 月 "+today.getDate()+" 日 "+
+    dayNames[today.getDay()] +"，生命中獨一無二的日子，願您平安喜樂！"+
+    "</font></b>"
+  );
+</script>
+</td>
+</tr>
+
+</table>
+</div>
+
+<!-- element.js 放在 body 尾端，確保穩定初始化 -->
+<script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

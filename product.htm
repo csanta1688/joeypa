@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="shortcut icon" href="JPlogo.ico">
+<title>茂果科技產品總覽</title>
+
+<style>
+:root{
+  --side-bg:#8080ff;
+  --side-hover:#FFFF99;
+  --side-text:#ffffff;
+  --content-bg:#ffffff;
+
+  /* 新增：標頭條底色（比側欄深一點，視覺像 Header Bar） */
+  --title-bg:#6f6fff;
+  --title-border:#9a9aff;
+}
+
+html,body{
+  height:100%;
+  margin:0;
+  background:var(--content-bg);
+  font-family:"Microsoft JhengHei","Meiryo","Hiragino Kaku Gothic ProN",Arial,sans-serif;
+}
+
+#layout{
+  display:flex;
+  height:100vh;
+  overflow:hidden;
+}
+
+#sidebar{
+  width:180px;
+  background:var(--side-bg);
+  color:var(--side-text);
+  box-sizing:border-box;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+
+  /* ===== 最小調整：讓標頭條貼齊側欄頂部 ===== */
+  padding:0;
+
+  /* 保留按鈕間距視覺（不影響按鈕風格） */
+  gap:8px;
+}
+
+/* ===== 已微調：標題變成「標頭條」且橫向 ===== */
+#sidebar .vtitle{
+  width:100%;
+  height:52px;                 /* 固定高度：像 header bar */
+  box-sizing:border-box;
+
+  background:var(--title-bg);  /* 底色條 */
+  border-bottom:1px solid var(--title-border);
+
+  display:flex;                /* 垂直/水平置中 */
+  align-items:center;
+  justify-content:center;
+
+  writing-mode:horizontal-tb;  /* 強制橫向 */
+  white-space:nowrap;          /* 不換行 */
+
+  color:#fff;
+  font-weight:bold;
+  font-size:14px;
+  letter-spacing:1px;
+  user-select:none;
+}
+
+/* 按鈕風格：完全保留原設定（不改） */
+#sidebar .btn{
+  width:160px;
+  background:#ffffff;
+  color:#8080ff;
+  border:0;
+  cursor:pointer;
+  font-size:12px;
+  padding:8px 0;
+}
+
+/* 讓第一顆按鈕不要黏住標題條（僅調整間距，不改按鈕風格） */
+#sidebar .btn:first-of-type{
+  margin-top:8px;
+}
+
+#sidebar .btn:hover{ background:var(--side-hover); }
+#sidebar .btn.active{ background:var(--side-hover); font-weight:bold; }
+
+#main{
+  flex:1;
+  overflow:auto;
+}
+#contentArea{
+  min-height:100%;
+}
+</style>
+
+<!-- Google 翻譯：維持與其他頁一致的自動翻譯繼承 -->
+<div id="google_translate_element" style="display:none"></div>
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({pageLanguage:'zh-TW', autoDisplay:false}, 'google_translate_element');
+}
+</script>
+<script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+<script>
+async function loadIntoContent(url){
+  const res = await fetch(url, {cache:'no-store'});
+  const html = await res.text();
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  const body = doc.body ? doc.body.innerHTML : html;
+  const area = document.getElementById('contentArea');
+  area.innerHTML = body;
+
+  // 讓分類頁內所有連結（例如 ppf/*.htm）都改成載入中央視窗
+  area.querySelectorAll('a[href]').forEach(a=>{
+    const href = a.getAttribute('href');
+    if(!href || href.startsWith('javascript:') || href.startsWith('http')) return;
+    a.addEventListener('click', (ev)=>{
+      ev.preventDefault();
+      loadIntoContent(href);
+    });
+  });
+}
+
+function setActive(id){
+  document.querySelectorAll('#sidebar .btn').forEach(b=>b.classList.remove('active'));
+  const b = document.getElementById(id);
+  if(b) b.classList.add('active');
+}
+
+function go(url, btnId){
+  setActive(btnId);
+  loadIntoContent(url);
+}
+
+window.addEventListener('DOMContentLoaded', ()=>{
+  go('product_inverter.htm','btn_inverter');
+});
+</script>
+
+</head>
+<body>
+<div id="layout">
+  <div id="sidebar">
+    <div class="vtitle">產品類型</div>
+
+    <button class="btn" id="btn_home" onclick="location.href='main.htm'">回主頁</button>
+    <button class="btn" id="btn_inverter" onclick="go('product_inverter.htm','btn_inverter')">電源轉換器</button>
+    <button class="btn" id="btn_charger" onclick="go('product_charger.htm','btn_charger')">鉛酸電瓶充電器</button>
+    <button class="btn" id="btn_isolator" onclick="go('product_isolator.htm','btn_isolator')">電瓶隔離器</button>
+    <button class="btn" id="btn_other" onclick="go('product_other.htm','btn_other')">相關附件</button>
+  </div>
+
+  <div id="main">
+    <div id="contentArea"></div>
+  </div>
+</div>
+</body>
+</html>

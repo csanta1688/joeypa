@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="shortcut icon" href="JPlogo.ico">
+  <title>茂果科技公司介紹</title>
+  <base target="_self">
+
+  <link rel="stylesheet" href="site_style.css">
+  <script src="site_ui.js" defer></script>
+
+  <script>
+    /* ===== Google 翻譯同步設定（與 main 一致）===== */
+    const SITE_FROM_LANG = "zh-TW";
+    const SITE_LANG_KEY  = "site_lang";
+    const SITE_LANG_LIST = "en,ja,ko,zh-CN,fr,de,es,vi,th,id,ar,fa,tr,zh-TW";
+
+    function setGoogTransCookie(fromLang, toLang){
+      const v = "/" + fromLang + "/" + toLang;
+      document.cookie = "googtrans=" + v + ";path=/";
+      document.cookie = "googtrans=" + v + ";path=/;SameSite=Lax";
+    }
+
+    function clearGoogTransCookie(){
+      document.cookie = "googtrans=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
+      document.cookie = "googtrans=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;SameSite=Lax";
+    }
+
+    function getCookie(name){
+      const m = document.cookie.match(new RegExp("(^|;\\s*)" + name + "=([^;]*)"));
+      return m ? decodeURIComponent(m[2]) : "";
+    }
+
+    function getLangFromGoogtransCookie(){
+      const gt = getCookie("googtrans");
+      const m = gt.match(/^\/([^\/]+)\/([^\/]+)$/);
+      if(!m) return null;
+      return { from: m[1], to: m[2] };
+    }
+
+    function getSavedLangSafe(){
+      const v = localStorage.getItem(SITE_LANG_KEY);
+      if (v && v !== "null" && v !== "undefined") return v;
+
+      const gt = getLangFromGoogtransCookie();
+      if (gt && gt.to) return gt.to;
+
+      return "original";
+    }
+
+    function isTranslatedNow(){
+      const de = document.documentElement;
+      return !!(
+        de.classList.contains("translated-ltr") ||
+        de.classList.contains("translated-rtl") ||
+        document.querySelector("iframe.goog-te-banner-frame") ||
+        document.querySelector(".goog-te-spinner-pos")
+      );
+    }
+
+    function forceApplyLangByCombo(){
+      const target = getSavedLangSafe();
+      if (target === "original") return;
+
+      let tries = 0;
+      const timer = setInterval(function(){
+        tries++;
+        const combo = document.querySelector("select.goog-te-combo");
+        if (combo) {
+          combo.value = target;
+          combo.dispatchEvent(new Event("change"));
+          clearInterval(timer);
+        }
+        if (tries > 50) clearInterval(timer);
+      }, 200);
+    }
+
+    (function autoApplySavedLang(){
+      const lang = getSavedLangSafe();
+      if (lang === "original") clearGoogTransCookie();
+      else setGoogTransCookie(SITE_FROM_LANG, lang);
+    })();
+
+    function googleTranslateElementInit(){
+      new google.translate.TranslateElement({
+        pageLanguage: SITE_FROM_LANG,
+        includedLanguages: SITE_LANG_LIST,
+        autoDisplay: false
+      }, 'google_translate_element');
+
+      forceApplyLangByCombo();
+    }
+
+    window.addEventListener("load", function(){
+      const lang = getSavedLangSafe();
+      if (lang === "original") clearGoogTransCookie();
+      else setGoogTransCookie(SITE_FROM_LANG, lang);
+      forceApplyLangByCombo();
+    });
+
+    (function ensureTranslateOnBack(){
+      function applyAgain(evt){
+        const lang = getSavedLangSafe();
+        if (lang === "original") {
+          sessionStorage.removeItem("gt_bfcache_reload_once_profile");
+          return;
+        }
+
+        setGoogTransCookie(SITE_FROM_LANG, lang);
+        forceApplyLangByCombo();
+
+        setTimeout(function(){
+          if (isTranslatedNow()) {
+            sessionStorage.removeItem("gt_bfcache_reload_once_profile");
+            return;
+          }
+
+          const key = "gt_bfcache_reload_once_profile";
+          if (evt && evt.persisted) {
+            if (sessionStorage.getItem(key)) return;
+            sessionStorage.setItem(key, "1");
+            location.reload();
+          }
+        }, 700);
+      }
+
+      window.addEventListener("pageshow", function(evt){ applyAgain(evt); });
+      document.addEventListener("visibilitychange", function(){
+        if (!document.hidden) applyAgain(null);
+      });
+    })();
+  </script>
+</head>
+
+<body>
+
+  <!-- Google 翻譯容器（不可 display:none） -->
+  <div id="google_translate_element"
+       style="position:absolute;left:-9999px;top:0;width:1px;height:1px;overflow:hidden"></div>
+
+  <div class="profile-card">
+    <div class="profile-title">
+      <h1>茂果科技有限公司</h1>
+      <h2>(JOEYPA TECHNOLOGY CORP.)</h2>
+    </div>
+
+    <!-- 單一中文原文（所有語言一律由 Google 翻譯） -->
+    <div class="profile-content">
+      <div id="companyScrollBox" class="auto-scroll-box" tabindex="0" aria-label="公司簡介（可用滑鼠滾輪捲動）">
+        公司成立於2005年，是具有代客專業設計與製造的公司(ODM)。
+        從一開始的產品開發、設計到最終的製造出廠，我們都提供最完善的服務。<br><br>
+
+        我們的產品包括了家用電瓶充電器(BATTERY CHARGER in home)，車用副電瓶充電器(Auxiliary BATTERY CHARGER in vehicle)，
+	車用副電瓶隔離器(BATTERY ISOLATOR)，同步/異步多線程循環定時器(Synchronous/Asynchronous Multithreaded Loop Timer)，
+	AC/DC瓦時功率計(AC/DC watt-hour power meter)，水族箱整合控制器(Aquarium integrated controller)，
+        以及各種非制式電器設備之偵測與自動控制等。以上產品都可依客戶需要設計，並接受小量ODM訂單服務。<br><br><br>
+
+        
+        在設計理念中，我們強調三個要素︰
+        <div class="profile-highlight">專業　｜　人性化　｜　創新</div>
+        在每一次產品的誕生背後，我們始終記得，科技的核心不是冷冰冰的數據，而是人。專業，是我們面對複雜工程時不妥協的態度；
+        創新，是我們面對未知未來時仍願意跨出去的勇氣；而人性化，則是我們最在乎的答案——因為產品最終要回到人們手中，
+        成為陪伴生活的力量。每一次改良、每一次試驗、甚至每一次被否定，都是讓我們更接近真正觸動人心的設計。
+        當一項產品不再只是功能，而是能讓人感到被理解、被照顧、被尊重，那才是我們最期待的時刻。
+        專業讓品質被看見，創新讓未來被看見，而人性化，讓我們彼此被看見。
+        
+        <br><br><br>
+
+        在公司的經營理念上，我們強調三個要素︰
+        <div class="profile-highlight">客戶、同仁、公司三方共同成長</div>
+        每一次合作與交流的過程中，我們深深體會到，所謂成就並不是單一方的勝利，而是在彼此信任下共同推進的旅程。
+        客戶的需求，讓我們不斷自我挑戰；同仁的努力，使我們有能力跨越困難；而公司的支持，則成為所有人前進的力量。
+        正因如此，我們才能在一次次的嘗試與突破中，看見三方都在成長：客戶獲得更完善的服務與價值、同仁累積更深的專業與成就、
+        公司也得以穩健前行。這樣的循環，讓我們相信，真正的成功，是在一起變得更好的過程。
+        <br>
+
+        我們正盼望能得到貴公司之支持與指教，讓我們有機會為您服務，並成為您事業更為茁壯的夥伴。
+      </div>
+
+      <div class="scroll-hint">滑鼠滾輪可手動捲動；未操作時自動慢捲；滑入內容區暫停。</div>
+    </div>
+
+  </div>
+
+  <!-- 翻譯核心 -->
+  <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+</html>

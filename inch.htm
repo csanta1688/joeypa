@@ -1,0 +1,58 @@
+<html>
+
+<head>
+<meta name="GENERATOR" content="Microsoft FrontPage 5.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<meta http-equiv="Content-Type" content="text/html; charset=big5">
+<title>inch</title>
+
+<SCRIPT language=JavaScript>
+
+sType="Right"; 
+iTime=1; 
+iMove=1; 
+gMove=4; 
+mPoint=0; 
+timerID=0; 
+cols1=768; 
+cols2=32; 
+cols3="*"; 
+function moveS(){
+mPoint=iMove;
+if (sType=="Right") 
+sType="Left";
+else
+sType="Right";
+timerID=setInterval("goMove()",iTime);
+}
+function goMove(){ 
+spStr=top.web.cols.split(",",1);
+colLen=parseInt(spStr);
+if (sType=="Right"){
+if (colLen > 0)
+top.web.cols=(colLen-mPoint) + "," + cols2 + "," + cols3 ;
+else{
+top.web.cols="0," + cols2 + "," + cols3 ;
+clearInterval(timerID);
+}
+}
+else {
+if (colLen < cols1-mPoint)
+top.web.cols=(colLen+mPoint) + "," + cols2 + "," + cols3 ;
+else{
+top.web.cols=cols1 + "," + cols2 + "," + cols3 ;
+clearInterval(timerID); 
+}
+}
+mPoint = mPoint + gMove;
+}
+
+</SCRIPT>
+</head>
+
+<body bgcolor="#0099FF" topmargin="20" leftmargin="0">
+<IMG onclick=moveS() src="clickin.gif" width="32" height="400">
+
+</body>
+
+</html>

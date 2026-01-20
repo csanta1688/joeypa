@@ -1,0 +1,175 @@
+/* ============================================================
+   site_style.css
+   全站共用樣式檔
+   功能：
+   - 統一字型、顏色、卡片樣式
+   - 控制公司簡介頁文字大小、顏色
+   - 配合 Google 翻譯，不影響 DOM 結構
+   ============================================================ */
+
+
+/* ---------- CSS 全域變數（品牌色與常用色） ---------- */
+:root{
+  --brand-blue:#0033cc;     /* 品牌主色（藍） */
+  --brand-gold:#c9a24d;     /* 品牌點綴色（金） */
+  --text:#222;              /* 一般正文文字顏色 */
+  --muted:#666;             /* 次要／提示文字顏色 */
+  --card-shadow: 0 10px 28px rgba(0,0,0,0.12); /* 卡片陰影 */
+}
+
+
+/* ---------- HTML / BODY 基本設定 ---------- */
+html, body{
+  margin:0;                 /* 清除瀏覽器預設外距 */
+  padding:0;                /* 清除瀏覽器預設內距 */
+  color: var(--text);       /* 預設文字顏色 */
+  font-family:              /* 中英日都穩定的字型順序 */
+    Arial,
+    "Microsoft JhengHei",
+    "PingFang TC",
+    sans-serif;
+}
+
+
+/* ---------- 超連結顏色統一 ---------- */
+a{
+  color: var(--brand-blue); /* 連結顏色 */
+}
+a:visited{
+  color: var(--brand-blue); /* 已拜訪連結仍維持同色 */
+}
+
+
+/* ============================================================
+   回首頁浮動按鈕（左側）
+   - 位置由 JS 動態計算
+   - fixed 不受捲動影響
+   ============================================================ */
+.site-home-btn{
+  position: fixed;          /* 固定在畫面上 */
+  z-index: 99999;           /* 保證不被蓋住 */
+  display: inline-flex;     /* 內部 icon + 文字橫排 */
+  align-items: center;
+  gap: 8px;                 /* icon 與文字間距 */
+  padding: 10px 12px;
+  border-radius: 999px;     /* 膠囊形狀 */
+  border: 2px solid var(--brand-gold);
+  background: rgba(255,255,255,0.95);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+  text-decoration: none;    /* 移除底線 */
+  color: #1a1a1a;
+  font-size: 14px;
+  line-height: 1;
+  user-select: none;        /* 防止文字被選取 */
+  left: 14px;               /* 預設左側位置（保險） */
+  top: 50%;                 /* 垂直置中 */
+  transform: translateY(-50%);
+}
+
+.site-home-btn:hover{
+  background:#fff;          /* 滑入稍微變亮 */
+}
+
+/* 回首頁按鈕左側小圓點 */
+.site-home-btn .dot{
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--brand-blue);
+  display: inline-block;
+}
+
+
+/* ============================================================
+   公司簡介卡片外框（profile-card）
+   - 中央白底卡片
+   - 高度與螢幕自適應，避免超出畫面
+   ============================================================ */
+.profile-card{
+  max-width: 880px;                         /* 最大寬度 */
+  width: min(880px, calc(100vw - 44px));    /* 手機也能縮 */
+  margin: 18px auto 18px;                   /* 上下間距 */
+  padding: 22px 26px;                       /* 內距 */
+  border: 3px solid var(--brand-gold);      /* 外框金邊 */
+  border-radius: 18px;                      /* 圓角 */
+  background: #fff;                         /* 白底 */
+  box-shadow: var(--card-shadow);            /* 陰影 */
+  box-sizing: border-box;                    /* 含 padding */
+}
+
+
+/* ---------- 公司名稱區塊 ---------- */
+.profile-title{
+  text-align:center;        /* 置中 */
+  margin: 0 0 12px 0;       /* 下方留距 */
+}
+
+/* 中文公司名（最大字） */
+.profile-title h1{
+  margin: 0;
+  font-size: 26px;          /* ★ 公司名稱字體大小 */
+  color: var(--brand-blue); /* ★ 公司名稱顏色 */
+}
+
+/* 英文公司名（副標） */
+.profile-title h2{
+  margin: 6px 0 0 0;
+  font-size: 15px;          /* 副標字體大小 */
+  color: var(--muted);      /* 淡灰色 */
+  font-weight: normal;
+}
+
+
+/* ============================================================
+   公司介紹文字捲動區（最重要）
+   - 自動慢捲
+   - 滑鼠滾輪可控制
+   - 高度隨視窗變化
+   ============================================================ */
+.auto-scroll-box{
+  /* 高度依螢幕高度動態調整 */
+  height: clamp(
+    280px,                  /* 最小高度 */
+    calc(100vh - 240px),    /* 依視窗計算 */
+    460px                   /* 最大高度 */
+  );
+  overflow: auto;           /* 超出顯示捲軸 */
+  padding: 14px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(0,0,0,0.12);
+  background: #ffffff;
+  scroll-behavior: smooth;  /* 捲動平滑 */
+  box-sizing: border-box;
+}
+
+/* 鍵盤 focus 時的外框（無障礙） */
+.auto-scroll-box:focus{
+  outline: 2px solid rgba(0,51,204,0.25);
+  outline-offset: 2px;
+}
+
+
+/* ---------- 公司介紹主要文字樣式 ---------- */
+.profile-content{
+  font-size: 16px;          /* ★ 內文文字大小（你要改就是這） */
+  line-height: 1.9;         /* 行距 */
+}
+
+
+/* ---------- 三大理念等重點文字 ---------- */
+.profile-highlight{
+  text-align:center;
+  color:#d40000;            /* ★ 重點文字顏色 */
+  font-weight:bold;
+  font-size:18px;           /* ★ 重點文字大小 */
+  margin: 14px 0;
+}
+
+
+/* ---------- 底部操作提示文字 ---------- */
+.scroll-hint{
+  margin-top: 8px;
+  text-align:center;
+  color: var(--muted);      /* 淡灰 */
+  font-size: 13px;
+}
