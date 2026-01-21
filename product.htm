@@ -186,13 +186,21 @@ function runInlineScripts(doc, mountEl){
 
 /** JBC1208M 縮圖相容層：
     - 原子頁 script 會做 mainImage.src = id + ".jpg"（相對路徑）
-    - 內嵌時會裂圖，所以在捕捉階段攔截 click，改成絕對路徑 */
+    - 內嵌時會裂圖，所以在捕捉階段攔截 click，改成絕對路徑
+    - ★關鍵修正：阻止子頁原本 click handler 執行，避免把大圖 src 改回相對路徑
+*/
 function attachGalleryCompat(area, pageUrl){
   const strip = area.querySelector("#thumbStrip");
   const mainImg = area.querySelector("#mainImage");
   if(!strip || !mainImg) return;
 
   const baseDir = new URL(".", pageUrl).href; // 例如 .../ppf/JBC1208M/
+
+  function setActive(btn){
+    const buttons = strip.querySelectorAll(".thumb-btn");
+    buttons.forEach(b => b.setAttribute("aria-current", "false"));
+    btn.setAttribute("aria-current", "true");
+  }
 
   strip.addEventListener("click", (e)=>{
     const btn = e.target.closest(".thumb-btn");
@@ -203,6 +211,12 @@ function attachGalleryCompat(area, pageUrl){
     // 直接指定絕對路徑，避免相對路徑回退
     mainImg.src = resolve(id + ".jpg", baseDir);
     mainImg.alt = id + " 原圖 (320x240)";
+    setActive(btn);
+
+    // ★阻止子頁原本的 click handler（它會把 src 改回相對路徑）
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.stopImmediatePropagation) e.stopImmediatePropagation();
   }, true); // 捕捉階段：先於子頁原本 handler
 }
 
