@@ -13,271 +13,281 @@
   --side-text:#ffffff;
   --content-bg:#ffffff;
 
-  /* 新增：標頭條底色（比側欄深一點，視覺像 Header Bar） */
-  --title-bg:#6c6cff;
-  --title-border:#5b5bff;
+  --title-bg:#6f6fff;
+  --title-border:#9a9aff;
 }
 
-*{box-sizing:border-box}
-html,body{height:100%;margin:0;font-family:"Microsoft JhengHei","Meiryo","Hiragino Kaku Gothic ProN",Arial,sans-serif;background:#fff;}
+html,body{
+  height:100%;
+  margin:0;
+  background:var(--content-bg);
+  font-family:"Microsoft JhengHei","Meiryo","Hiragino Kaku Gothic ProN",Arial,sans-serif;
+}
 
 #layout{
   display:flex;
   height:100vh;
-  width:100vw;
   overflow:hidden;
 }
 
-/* ===== 左側類別欄 ===== */
 #sidebar{
-  width:260px;
+  width:180px;
   background:var(--side-bg);
-  padding:12px;
+  color:var(--side-text);
+  box-sizing:border-box;
   display:flex;
   flex-direction:column;
+  align-items:center;
+  padding:0;
   gap:8px;
 }
 
-/* ===== 已微調：標題變成「標頭條」且橫向 ===== */
 #sidebar .vtitle{
   width:100%;
-  height:52px;                 /* 固定高度：像 header bar */
+  height:52px;
   box-sizing:border-box;
-
-  background:var(--title-bg);  /* 底色條 */
+  background:var(--title-bg);
   border-bottom:1px solid var(--title-border);
-
-  display:flex;                /* 垂直/水平置中 */
+  display:flex;
   align-items:center;
   justify-content:center;
-
+  writing-mode:horizontal-tb;
+  white-space:nowrap;
   color:#fff;
-  font-size:20px;
-  font-weight:800;
-  letter-spacing:2px;
-  margin:-12px -12px 6px -12px; /* 讓 header bar 撐滿 sidebar */
-}
-
-/* 左側按鈕 */
-#sidebar .btn{
-  width:100%;
-  border:0;
-  border-radius:10px;
-  padding:14px 14px;
-  font-size:16px;
-  font-weight:700;
-  cursor:pointer;
-  background:rgba(255,255,255,0.20);
-  color:var(--side-text);
-  transition:background .15s ease, color .15s ease;
-  text-align:left;
-}
-#sidebar .btn:hover{
-  background:var(--side-hover);
-  color:#000;
-}
-#sidebar .btn.active{
-  background:#ffffff;
-  color:#000;
-}
-
-/* ===== 右側內容區 ===== */
-#content{
-  flex:1;
-  background:var(--content-bg);
-  overflow:auto;
-  padding:16px;
-}
-
-#contentFrame{
-  max-width:1100px;
-  margin:0 auto;
-  background:#fff;
-  border-radius:14px;
-  box-shadow:0 6px 18px rgba(0,0,0,0.12);
-  padding:18px;
-}
-
-.note{
-  color:#334155;
+  font-weight:bold;
   font-size:14px;
-  margin:0 0 10px 0;
+  letter-spacing:1px;
+  user-select:none;
+}
+
+#sidebar .btn{
+  width:160px;
+  background:#ffffff;
+  color:#8080ff;
+  border:0;
+  cursor:pointer;
+  font-size:12px;
+  padding:8px 0;
+}
+
+#sidebar .btn:first-of-type{ margin-top:8px; }
+#sidebar .btn:hover{ background:var(--side-hover); }
+#sidebar .btn.active{ background:var(--side-hover); font-weight:bold; }
+
+#main{
+  flex:1;
+  overflow:auto;
+}
+#contentArea{
+  min-height:100%;
 }
 </style>
 
-<!-- Google Translate（母頁統一載入，子頁避免重複載入） -->
+<!-- Google 翻譯：母頁統一管理，子頁不重複載入 -->
+<div id="google_translate_element" style="display:none"></div>
 <script>
-/* ===== Google 翻譯同步設定（與 main.htm 同一套）===== */
-const SITE_FROM_LANG = "zh-TW";
-const SITE_LANG_LIST = ["zh-TW","en","ja","ko","de","fr","es","it","pt","ru","ar","hi","tr","vi","th","id","ms","fa"];
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({pageLanguage:'zh-TW', autoDisplay:false}, 'google_translate_element');
+}
 </script>
 <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-<script>
-function googleTranslateElementInit(){
-  new google.translate.TranslateElement({
-    pageLanguage: SITE_FROM_LANG,
-    includedLanguages: SITE_LANG_LIST.join(","),
-    autoDisplay: false
-  }, 'google_translate_element');
-}
-</script>
 
 <script>
-/* ===== 動態載入子頁：保留原內容/動作，同時修正（1）子頁<head>樣式遺失（2）相對路徑失效 ===== */
-const __DYNAMIC_ASSET_ATTR = 'data-dynamic-asset';
-const __LOADED_SCRIPT_SET = window.__LOADED_SCRIPT_SET || (window.__LOADED_SCRIPT_SET = new Set());
+/* =========================
+   子頁載入器修正版（強化：永遠不跳出 product.htm 框架）
+   - 注入子頁 head 的 style/link
+   - 修正子頁內相對路徑 (img/src, a/href, background url)
+   - 修正 JBC1208M 縮圖切換會把 src 改回相對路徑的問題
+   - ★新增：contentArea capture 導頁攔截器（避免點 GO 跳出框架）
+   ========================= */
 
-function __resetDynamicHeadAssets(){
-  document.head.querySelectorAll(`style[${__DYNAMIC_ASSET_ATTR}],link[rel="stylesheet"][${__DYNAMIC_ASSET_ATTR}]`)
-    .forEach(n => n.remove());
+const DYN_ATTR = "data-dyn-asset";
+
+/** 清掉上一個子頁注入的 style/link（避免污染） */
+function resetDynHead(){
+  document.head.querySelectorAll(`style[${DYN_ATTR}],link[rel="stylesheet"][${DYN_ATTR}]`).forEach(n=>n.remove());
 }
 
-function __isAbsUrl(u){
-  return /^(https?:)?\/\//i.test(u) || /^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(u) || u.startsWith('/');
+function isAbs(u){
+  return /^(https?:)?\/\//i.test(u) || /^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(u) || u.startsWith("/");
+}
+function resolve(u, base){
+  try { return new URL(u, base).href; } catch(e) { return u; }
 }
 
-function __resolveUrl(u, baseUrl){
-  try{ return new URL(u, baseUrl).href; }catch(e){ return u; }
-}
-
-function __rewriteRelativeAttrs(root, baseUrl){
-  // src / href / poster 這類常見子資源路徑
-  const attrs = ['src','href','poster'];
-  root.querySelectorAll('[src],[href],[poster]').forEach(el=>{
-    attrs.forEach(attr=>{
+/** 修正內容區內的相對路徑：src/href/poster + style url(...) */
+function rewriteRelatives(root, baseUrl){
+  root.querySelectorAll("[src],[href],[poster]").forEach(el=>{
+    ["src","href","poster"].forEach(attr=>{
       if(!el.hasAttribute(attr)) return;
       const v = el.getAttribute(attr);
       if(!v) return;
-
-      // 保留錨點、JS、mailto/tel/data 等
-      if(v.startsWith('#')) return;
+      if(v.startsWith("#")) return;
       if(/^javascript:/i.test(v)) return;
       if(/^(mailto:|tel:|data:|blob:)/i.test(v)) return;
-
-      // 以子頁 URL 為基準修正相對路徑
-      if(!__isAbsUrl(v)){
-        el.setAttribute(attr, __resolveUrl(v, baseUrl));
+      if(!isAbs(v)){
+        el.setAttribute(attr, resolve(v, baseUrl));
       }
     });
   });
 
-  // inline style 裡的 url(...) 也一併修正（避免背景圖失效）
-  root.querySelectorAll('[style]').forEach(el=>{
-    const s = el.getAttribute('style') || '';
+  root.querySelectorAll("[style]").forEach(el=>{
+    const s = el.getAttribute("style") || "";
     const fixed = s.replace(/url\((['"]?)([^'")]+)\1\)/gi, (m,q,u)=>{
-      const uu = u.trim();
-      if(!uu || __isAbsUrl(uu) || uu.startsWith('#') || /^(data:|blob:)/i.test(uu)) return m;
-      return `url("${__resolveUrl(uu, baseUrl)}")`;
+      const uu = (u||"").trim();
+      if(!uu) return m;
+      if(isAbs(uu) || uu.startsWith("#") || /^(data:|blob:)/i.test(uu)) return m;
+      return `url("${resolve(uu, baseUrl)}")`;
     });
-    if(fixed !== s) el.setAttribute('style', fixed);
+    if(fixed !== s) el.setAttribute("style", fixed);
   });
 }
 
-function __injectHeadStyles(doc, baseUrl){
-  __resetDynamicHeadAssets();
+/** 注入子頁 head 的 style/link 到母頁 */
+function injectHeadAssets(doc, baseUrl){
+  resetDynHead();
 
-  // 1) <style>（例如 JBC1208M 的主樣式）
-  doc.querySelectorAll('head style').forEach(st=>{
-    const n = document.createElement('style');
-    n.setAttribute(__DYNAMIC_ASSET_ATTR, '1');
-    n.textContent = st.textContent || '';
+  doc.querySelectorAll("head style").forEach(st=>{
+    const n = document.createElement("style");
+    n.setAttribute(DYN_ATTR,"1");
+    n.textContent = st.textContent || "";
     document.head.appendChild(n);
   });
 
-  // 2) <link rel="stylesheet">（若日後改成外部 css 也能正常）
   doc.querySelectorAll('head link[rel="stylesheet"][href]').forEach(ln=>{
-    const n = document.createElement('link');
-    n.rel = 'stylesheet';
-    n.setAttribute(__DYNAMIC_ASSET_ATTR, '1');
-    n.href = __resolveUrl(ln.getAttribute('href'), baseUrl);
+    const n = document.createElement("link");
+    n.rel = "stylesheet";
+    n.setAttribute(DYN_ATTR,"1");
+    n.href = resolve(ln.getAttribute("href"), baseUrl);
     document.head.appendChild(n);
   });
 }
 
-function __runChildScripts(doc, baseUrl, mountEl){
-  // 只執行子頁自己的互動腳本；翻譯主腳本由母頁統一管理，避免重複載入/衝突
-  const scripts = Array.from(doc.querySelectorAll('script'));
-  scripts.forEach(s=>{
-    const src = s.getAttribute('src');
-    if(src){
-      const resolved = __resolveUrl(src, baseUrl);
+/** 子頁腳本：只執行 inline（避免重複載入 translate element.js）
+    注意：JBC1208M 的縮圖行為我不靠執行它的 script，而是用下面的相容層接管 src */
+function runInlineScripts(doc, mountEl){
+  doc.querySelectorAll("script").forEach(s=>{
+    const src = s.getAttribute("src");
+    const code = (s.textContent || "").trim();
 
-      // 避免重複載入 Google 翻譯 element.js（母頁已載入）
-      if(/translate\.google\.com\/translate_a\/element\.js/i.test(resolved)) return;
+    // 不重複載入 Google 翻譯 element.js
+    if(src && /translate\.google\.com\/translate_a\/element\.js/i.test(src)) return;
+    // 避免覆寫母頁翻譯 init
+    if(code && /googleTranslateElementInit|translate_a\/element\.js/i.test(code)) return;
 
-      if(__LOADED_SCRIPT_SET.has(resolved)) return;
-      __LOADED_SCRIPT_SET.add(resolved);
-
-      const ns = document.createElement('script');
-      ns.src = resolved;
-      ns.async = true;
-      mountEl.appendChild(ns);
-    }else{
-      const code = s.textContent || '';
-      if(!code.trim()) return;
-
-      // 若子頁也包含翻譯同步設定，可保留不執行（避免覆寫母頁設定）
-      if(/googleTranslateElementInit|translate_a\/element\.js/i.test(code)) return;
-
-      const ns = document.createElement('script');
+    // 只執行 inline（保守、安全；外部 script 若你有需要可再加）
+    if(!src && code){
+      const ns = document.createElement("script");
       ns.textContent = code;
       mountEl.appendChild(ns);
     }
   });
 }
 
+/** JBC1208M 縮圖相容層：
+    - 原子頁 script 會做 mainImage.src = id + ".jpg"（相對路徑）
+    - 內嵌時會裂圖，所以在捕捉階段攔截 click，改成絕對路徑 */
+function attachGalleryCompat(area, pageUrl){
+  const strip = area.querySelector("#thumbStrip");
+  const mainImg = area.querySelector("#mainImage");
+  if(!strip || !mainImg) return;
+
+  const baseDir = new URL(".", pageUrl).href; // 例如 .../ppf/JBC1208M/
+
+  strip.addEventListener("click", (e)=>{
+    const btn = e.target.closest(".thumb-btn");
+    if(!btn) return;
+    const id = btn.getAttribute("data-id");
+    if(!id) return;
+
+    // 直接指定絕對路徑，避免相對路徑回退
+    mainImg.src = resolve(id + ".jpg", baseDir);
+    mainImg.alt = id + " 原圖 (320x240)";
+  }, true); // 捕捉階段：先於子頁原本 handler
+}
+
+/** ★重點：在 contentArea 以 capture 攔截所有站內 .htm/.html 導頁，確保永遠不跳出 product.htm */
+function installContentNavInterceptor(area){
+  if(area.__navInterceptorInstalled) return;
+  area.__navInterceptorInstalled = true;
+
+  area.addEventListener("click", function(e){
+    const a = e.target.closest && e.target.closest("a[href]");
+    if(!a) return;
+
+    const hrefRaw = a.getAttribute("href");
+    if(!hrefRaw) return;
+
+    // 允許：錨點 / JS / mailto / tel / data / blob
+    if(hrefRaw.startsWith("#")) return;
+    if(/^javascript:/i.test(hrefRaw)) return;
+    if(/^(mailto:|tel:|data:|blob:)/i.test(hrefRaw)) return;
+
+    // 若是外站 http(s)，放行
+    if(/^(https?:)?\/\//i.test(hrefRaw) && !hrefRaw.startsWith(location.origin)) return;
+
+    // 只攔 .htm/.html（你站內都是這種）
+    const abs = resolve(hrefRaw, area.__currentPageUrl || location.href);
+    const isHtml = /\.html?(\?|#|$)/i.test(abs);
+    const sameOrigin = abs.startsWith(location.origin);
+
+    if(sameOrigin && isHtml){
+      e.preventDefault();
+      e.stopPropagation();
+      loadIntoContent(abs);
+    }
+  }, true); // capture：先攔截，避免預設導頁跳出框架
+}
+
 async function loadIntoContent(url){
-  const baseUrl = new URL(url, location.href).href;
+  // 這裡一定要把 url 變成絕對，否則多層相對路徑會錯
+  const pageUrl = new URL(url, location.href).href;
 
-  const res = await fetch(baseUrl, {cache:'no-store'});
+  const res = await fetch(pageUrl, {cache:"no-store"});
   const html = await res.text();
-  const doc = new DOMParser().parseFromString(html, 'text/html');
+  const doc = new DOMParser().parseFromString(html, "text/html");
 
-  // 1) 注入子頁 head 的樣式（不改原顯示格式）
-  __injectHeadStyles(doc, baseUrl);
+  // 1) 注入子頁 head 的 style/link（CSS 才會恢復）
+  injectHeadAssets(doc, pageUrl);
 
-  // 2) 載入子頁 body（不改原顯示內容）
-  const area = document.getElementById('contentArea');
+  // 2) 塞子頁 body
+  const area = document.getElementById("contentArea");
   area.innerHTML = doc.body ? doc.body.innerHTML : html;
 
-  // 3) 修正相對路徑（圖片/連結/背景圖），讓多層頁面可正確連貫運作
-  __rewriteRelativeAttrs(area, baseUrl);
+  // 記錄目前子頁 URL（供攔截器用作 base）
+  area.__currentPageUrl = pageUrl;
 
-  // 4) 讓子頁內所有連結都改成載入中央視窗（保留原操作動作：點連結 = 進入該頁）
-  area.querySelectorAll('a[href]').forEach(a=>{
-    const href = a.getAttribute('href');
-    if(!href) return;
+  // ★先安裝全域攔截器（只裝一次）
+  installContentNavInterceptor(area);
 
-    // 保留錨點（同頁跳轉）、外部連結、JS、mailto/tel
-    if(href.startsWith('#')) return;
-    if(/^javascript:/i.test(href)) return;
-    if(/^(mailto:|tel:)/i.test(href)) return;
-    if(__isAbsUrl(href) && /^https?:/i.test(href)) return;
+  // 3) 修正相對路徑（圖片、連結、背景）
+  rewriteRelatives(area, pageUrl);
 
-    a.addEventListener('click', (ev)=>{
-      ev.preventDefault();
-      const nextUrl = __resolveUrl(href, baseUrl);
-      loadIntoContent(nextUrl);
-    });
+  // 4) 強制內容區所有連結 target=_self（避免另開或跳出框架）
+  area.querySelectorAll("a").forEach(a=>{
+    a.setAttribute("target","_self");
+    a.removeAttribute("download");
   });
 
-  // 5) 執行子頁互動腳本（例如 JBC1208M 的縮圖切換）
-  __runChildScripts(doc, baseUrl, area);
+  // 5) 執行必要 inline scripts（若子頁有用到）
+  runInlineScripts(doc, area);
+
+  // 6) 特別修正：JBC1208M 縮圖點擊後 src 會回相對路徑導致裂圖
+  attachGalleryCompat(area, pageUrl);
 }
 
 function setActive(id){
-  document.querySelectorAll('#sidebar .btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll("#sidebar .btn").forEach(b=>b.classList.remove("active"));
   const b = document.getElementById(id);
-  if(b) b.classList.add('active');
+  if(b) b.classList.add("active");
 }
-
-function go(url,btnId){
+function go(url, btnId){
   setActive(btnId);
   loadIntoContent(url);
 }
 
-window.addEventListener('DOMContentLoaded', ()=>{
-  go('product_inverter.htm','btn_inverter');
+window.addEventListener("DOMContentLoaded", ()=>{
+  go("product_inverter.htm","btn_inverter");
 });
 </script>
 
@@ -288,23 +298,14 @@ window.addEventListener('DOMContentLoaded', ()=>{
     <div class="vtitle">產品類型</div>
 
     <button class="btn" id="btn_home" onclick="location.href='main.htm'">回主頁</button>
-
     <button class="btn" id="btn_inverter" onclick="go('product_inverter.htm','btn_inverter')">電源轉換器</button>
     <button class="btn" id="btn_charger" onclick="go('product_charger.htm','btn_charger')">鉛酸電瓶充電器</button>
     <button class="btn" id="btn_isolator" onclick="go('product_isolator.htm','btn_isolator')">電瓶隔離器</button>
-    <button class="btn" id="btn_other" onclick="go('product_other.htm','btn_other')">其他附件</button>
-
-    <!-- 讓 Google 翻譯的下拉出現在左側（你原本若有位置需求可保留） -->
-    <div style="margin-top:auto;padding-top:10px">
-      <div id="google_translate_element"></div>
-    </div>
+    <button class="btn" id="btn_other" onclick="go('product_other.htm','btn_other')">相關附件</button>
   </div>
 
-  <div id="content">
-    <div id="contentFrame">
-      <p class="note">請於左側選擇產品類別，內容將顯示於此。</p>
-      <div id="contentArea"></div>
-    </div>
+  <div id="main">
+    <div id="contentArea"></div>
   </div>
 </div>
 </body>
