@@ -14,36 +14,27 @@
   --content-bg:#ffffff;
 
   /* 新增：標頭條底色（比側欄深一點，視覺像 Header Bar） */
-  --title-bg:#6f6fff;
-  --title-border:#9a9aff;
+  --title-bg:#6c6cff;
+  --title-border:#5b5bff;
 }
 
-html,body{
-  height:100%;
-  margin:0;
-  background:var(--content-bg);
-  font-family:"Microsoft JhengHei","Meiryo","Hiragino Kaku Gothic ProN",Arial,sans-serif;
-}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;font-family:"Microsoft JhengHei","Meiryo","Hiragino Kaku Gothic ProN",Arial,sans-serif;background:#fff;}
 
 #layout{
   display:flex;
   height:100vh;
+  width:100vw;
   overflow:hidden;
 }
 
+/* ===== 左側類別欄 ===== */
 #sidebar{
-  width:180px;
+  width:260px;
   background:var(--side-bg);
-  color:var(--side-text);
-  box-sizing:border-box;
+  padding:12px;
   display:flex;
   flex-direction:column;
-  align-items:center;
-
-  /* ===== 最小調整：讓標頭條貼齊側欄頂部 ===== */
-  padding:0;
-
-  /* 保留按鈕間距視覺（不影響按鈕風格） */
   gap:8px;
 }
 
@@ -60,71 +51,218 @@ html,body{
   align-items:center;
   justify-content:center;
 
-  writing-mode:horizontal-tb;  /* 強制橫向 */
-  white-space:nowrap;          /* 不換行 */
-
   color:#fff;
-  font-weight:bold;
-  font-size:14px;
-  letter-spacing:1px;
-  user-select:none;
+  font-size:20px;
+  font-weight:800;
+  letter-spacing:2px;
+  margin:-12px -12px 6px -12px; /* 讓 header bar 撐滿 sidebar */
 }
 
-/* 按鈕風格：完全保留原設定（不改） */
+/* 左側按鈕 */
 #sidebar .btn{
-  width:160px;
-  background:#ffffff;
-  color:#8080ff;
+  width:100%;
   border:0;
+  border-radius:10px;
+  padding:14px 14px;
+  font-size:16px;
+  font-weight:700;
   cursor:pointer;
-  font-size:12px;
-  padding:8px 0;
+  background:rgba(255,255,255,0.20);
+  color:var(--side-text);
+  transition:background .15s ease, color .15s ease;
+  text-align:left;
+}
+#sidebar .btn:hover{
+  background:var(--side-hover);
+  color:#000;
+}
+#sidebar .btn.active{
+  background:#ffffff;
+  color:#000;
 }
 
-/* 讓第一顆按鈕不要黏住標題條（僅調整間距，不改按鈕風格） */
-#sidebar .btn:first-of-type{
-  margin-top:8px;
-}
-
-#sidebar .btn:hover{ background:var(--side-hover); }
-#sidebar .btn.active{ background:var(--side-hover); font-weight:bold; }
-
-#main{
+/* ===== 右側內容區 ===== */
+#content{
   flex:1;
+  background:var(--content-bg);
   overflow:auto;
+  padding:16px;
 }
-#contentArea{
-  min-height:100%;
+
+#contentFrame{
+  max-width:1100px;
+  margin:0 auto;
+  background:#fff;
+  border-radius:14px;
+  box-shadow:0 6px 18px rgba(0,0,0,0.12);
+  padding:18px;
+}
+
+.note{
+  color:#334155;
+  font-size:14px;
+  margin:0 0 10px 0;
 }
 </style>
 
-<!-- Google 翻譯：維持與其他頁一致的自動翻譯繼承 -->
-<div id="google_translate_element" style="display:none"></div>
+<!-- Google Translate（母頁統一載入，子頁避免重複載入） -->
 <script>
-function googleTranslateElementInit() {
-  new google.translate.TranslateElement({pageLanguage:'zh-TW', autoDisplay:false}, 'google_translate_element');
-}
+/* ===== Google 翻譯同步設定（與 main.htm 同一套）===== */
+const SITE_FROM_LANG = "zh-TW";
+const SITE_LANG_LIST = ["zh-TW","en","ja","ko","de","fr","es","it","pt","ru","ar","hi","tr","vi","th","id","ms","fa"];
 </script>
 <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+<script>
+function googleTranslateElementInit(){
+  new google.translate.TranslateElement({
+    pageLanguage: SITE_FROM_LANG,
+    includedLanguages: SITE_LANG_LIST.join(","),
+    autoDisplay: false
+  }, 'google_translate_element');
+}
+</script>
 
 <script>
-async function loadIntoContent(url){
-  const res = await fetch(url, {cache:'no-store'});
-  const html = await res.text();
-  const doc = new DOMParser().parseFromString(html, 'text/html');
-  const body = doc.body ? doc.body.innerHTML : html;
-  const area = document.getElementById('contentArea');
-  area.innerHTML = body;
+/* ===== 動態載入子頁：保留原內容/動作，同時修正（1）子頁<head>樣式遺失（2）相對路徑失效 ===== */
+const __DYNAMIC_ASSET_ATTR = 'data-dynamic-asset';
+const __LOADED_SCRIPT_SET = window.__LOADED_SCRIPT_SET || (window.__LOADED_SCRIPT_SET = new Set());
 
-  // 讓分類頁內所有連結（例如 ppf/*.htm）都改成載入中央視窗
-  area.querySelectorAll('a[href]').forEach(a=>{
-    const href = a.getAttribute('href');
-    if(!href || href.startsWith('javascript:') || href.startsWith('http')) return;
-    a.addEventListener('click', (ev)=>{
-      ev.preventDefault();
-      loadIntoContent(href);
+function __resetDynamicHeadAssets(){
+  document.head.querySelectorAll(`style[${__DYNAMIC_ASSET_ATTR}],link[rel="stylesheet"][${__DYNAMIC_ASSET_ATTR}]`)
+    .forEach(n => n.remove());
+}
+
+function __isAbsUrl(u){
+  return /^(https?:)?\/\//i.test(u) || /^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(u) || u.startsWith('/');
+}
+
+function __resolveUrl(u, baseUrl){
+  try{ return new URL(u, baseUrl).href; }catch(e){ return u; }
+}
+
+function __rewriteRelativeAttrs(root, baseUrl){
+  // src / href / poster 這類常見子資源路徑
+  const attrs = ['src','href','poster'];
+  root.querySelectorAll('[src],[href],[poster]').forEach(el=>{
+    attrs.forEach(attr=>{
+      if(!el.hasAttribute(attr)) return;
+      const v = el.getAttribute(attr);
+      if(!v) return;
+
+      // 保留錨點、JS、mailto/tel/data 等
+      if(v.startsWith('#')) return;
+      if(/^javascript:/i.test(v)) return;
+      if(/^(mailto:|tel:|data:|blob:)/i.test(v)) return;
+
+      // 以子頁 URL 為基準修正相對路徑
+      if(!__isAbsUrl(v)){
+        el.setAttribute(attr, __resolveUrl(v, baseUrl));
+      }
     });
   });
+
+  // inline style 裡的 url(...) 也一併修正（避免背景圖失效）
+  root.querySelectorAll('[style]').forEach(el=>{
+    const s = el.getAttribute('style') || '';
+    const fixed = s.replace(/url\((['"]?)([^'")]+)\1\)/gi, (m,q,u)=>{
+      const uu = u.trim();
+      if(!uu || __isAbsUrl(uu) || uu.startsWith('#') || /^(data:|blob:)/i.test(uu)) return m;
+      return `url("${__resolveUrl(uu, baseUrl)}")`;
+    });
+    if(fixed !== s) el.setAttribute('style', fixed);
+  });
+}
+
+function __injectHeadStyles(doc, baseUrl){
+  __resetDynamicHeadAssets();
+
+  // 1) <style>（例如 JBC1208M 的主樣式）
+  doc.querySelectorAll('head style').forEach(st=>{
+    const n = document.createElement('style');
+    n.setAttribute(__DYNAMIC_ASSET_ATTR, '1');
+    n.textContent = st.textContent || '';
+    document.head.appendChild(n);
+  });
+
+  // 2) <link rel="stylesheet">（若日後改成外部 css 也能正常）
+  doc.querySelectorAll('head link[rel="stylesheet"][href]').forEach(ln=>{
+    const n = document.createElement('link');
+    n.rel = 'stylesheet';
+    n.setAttribute(__DYNAMIC_ASSET_ATTR, '1');
+    n.href = __resolveUrl(ln.getAttribute('href'), baseUrl);
+    document.head.appendChild(n);
+  });
+}
+
+function __runChildScripts(doc, baseUrl, mountEl){
+  // 只執行子頁自己的互動腳本；翻譯主腳本由母頁統一管理，避免重複載入/衝突
+  const scripts = Array.from(doc.querySelectorAll('script'));
+  scripts.forEach(s=>{
+    const src = s.getAttribute('src');
+    if(src){
+      const resolved = __resolveUrl(src, baseUrl);
+
+      // 避免重複載入 Google 翻譯 element.js（母頁已載入）
+      if(/translate\.google\.com\/translate_a\/element\.js/i.test(resolved)) return;
+
+      if(__LOADED_SCRIPT_SET.has(resolved)) return;
+      __LOADED_SCRIPT_SET.add(resolved);
+
+      const ns = document.createElement('script');
+      ns.src = resolved;
+      ns.async = true;
+      mountEl.appendChild(ns);
+    }else{
+      const code = s.textContent || '';
+      if(!code.trim()) return;
+
+      // 若子頁也包含翻譯同步設定，可保留不執行（避免覆寫母頁設定）
+      if(/googleTranslateElementInit|translate_a\/element\.js/i.test(code)) return;
+
+      const ns = document.createElement('script');
+      ns.textContent = code;
+      mountEl.appendChild(ns);
+    }
+  });
+}
+
+async function loadIntoContent(url){
+  const baseUrl = new URL(url, location.href).href;
+
+  const res = await fetch(baseUrl, {cache:'no-store'});
+  const html = await res.text();
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+
+  // 1) 注入子頁 head 的樣式（不改原顯示格式）
+  __injectHeadStyles(doc, baseUrl);
+
+  // 2) 載入子頁 body（不改原顯示內容）
+  const area = document.getElementById('contentArea');
+  area.innerHTML = doc.body ? doc.body.innerHTML : html;
+
+  // 3) 修正相對路徑（圖片/連結/背景圖），讓多層頁面可正確連貫運作
+  __rewriteRelativeAttrs(area, baseUrl);
+
+  // 4) 讓子頁內所有連結都改成載入中央視窗（保留原操作動作：點連結 = 進入該頁）
+  area.querySelectorAll('a[href]').forEach(a=>{
+    const href = a.getAttribute('href');
+    if(!href) return;
+
+    // 保留錨點（同頁跳轉）、外部連結、JS、mailto/tel
+    if(href.startsWith('#')) return;
+    if(/^javascript:/i.test(href)) return;
+    if(/^(mailto:|tel:)/i.test(href)) return;
+    if(__isAbsUrl(href) && /^https?:/i.test(href)) return;
+
+    a.addEventListener('click', (ev)=>{
+      ev.preventDefault();
+      const nextUrl = __resolveUrl(href, baseUrl);
+      loadIntoContent(nextUrl);
+    });
+  });
+
+  // 5) 執行子頁互動腳本（例如 JBC1208M 的縮圖切換）
+  __runChildScripts(doc, baseUrl, area);
 }
 
 function setActive(id){
@@ -133,7 +271,7 @@ function setActive(id){
   if(b) b.classList.add('active');
 }
 
-function go(url, btnId){
+function go(url,btnId){
   setActive(btnId);
   loadIntoContent(url);
 }
@@ -150,14 +288,23 @@ window.addEventListener('DOMContentLoaded', ()=>{
     <div class="vtitle">產品類型</div>
 
     <button class="btn" id="btn_home" onclick="location.href='main.htm'">回主頁</button>
+
     <button class="btn" id="btn_inverter" onclick="go('product_inverter.htm','btn_inverter')">電源轉換器</button>
     <button class="btn" id="btn_charger" onclick="go('product_charger.htm','btn_charger')">鉛酸電瓶充電器</button>
     <button class="btn" id="btn_isolator" onclick="go('product_isolator.htm','btn_isolator')">電瓶隔離器</button>
-    <button class="btn" id="btn_other" onclick="go('product_other.htm','btn_other')">相關附件</button>
+    <button class="btn" id="btn_other" onclick="go('product_other.htm','btn_other')">其他附件</button>
+
+    <!-- 讓 Google 翻譯的下拉出現在左側（你原本若有位置需求可保留） -->
+    <div style="margin-top:auto;padding-top:10px">
+      <div id="google_translate_element"></div>
+    </div>
   </div>
 
-  <div id="main">
-    <div id="contentArea"></div>
+  <div id="content">
+    <div id="contentFrame">
+      <p class="note">請於左側選擇產品類別，內容將顯示於此。</p>
+      <div id="contentArea"></div>
+    </div>
   </div>
 </div>
 </body>
