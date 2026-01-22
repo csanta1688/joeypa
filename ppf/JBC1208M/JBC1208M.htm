@@ -131,6 +131,22 @@ body{
 .top-grid .cell.main,
 .top-grid .cell.spec{ border-bottom: none; }
 
+
+/* === 產品頁頂部標題專用（僅放大＋藍色） === */
+.header-title {
+    text-align: center;
+    font-size: 28px;
+    font-weight: 700;
+    color: #1e40af; /* 深藍色 */
+}
+
+.header-model {
+    text-align: center;
+    font-size: 26px;
+    font-weight: 700;
+    color: #1e40af; /* 深藍色 */
+}
+
 /* 文字層級（不改內容，只改視覺） */
 .title-text{
   text-align: center;
@@ -505,10 +521,10 @@ window.addEventListener("load", function(){
   <!-- 上半部：標題列 + 主圖/規格內容（黑框） -->
   <section class="frame top-grid" aria-label="上方框架">
     <div class="cell">
-      <div class="title-text">JOEYPA多功能電瓶充電器</div>
+      <div class="header-title">JOEYPA多功能電瓶充電器</div>
     </div>
     <div class="cell">
-      <div class="title-text">JBC-1208M</div>
+      <div class="header-model">JBC-1208M</div>
     </div>
 
     <div class="cell main" aria-label="主圖顯示區">
@@ -523,7 +539,7 @@ window.addEventListener("load", function(){
 
     <div class="spec-row">
       <span class="spec-label">輸入：</span>
-      <span class="spec-value">AC 90~130V 50/60Hz 2.2A</span>
+      <span class="spec-value">AC 90~230V 50/60Hz 2.2A</span>
     </div>
 
     <div class="spec-row">
@@ -542,8 +558,14 @@ window.addEventListener("load", function(){
     </div>
     <div class="spec-row">
       <span class="spec-label">適用：</span>
-      <span class="spec-value">12V 鉛酸/鋰鐵/鈦酸鋰電池充電與守護</span>
+      <span class="spec-value">12V 鉛酸/鋰鐵/鈦酸鋰電池</span>
     </div>
+    <div class="spec-row">
+      <span class="spec-label"></span>
+      <span class="spec-value">充電與長時間電瓶守護用途</span>
+    </div>
+
+  
   </div>
 </div>
 
@@ -587,8 +609,8 @@ window.addEventListener("load", function(){
         <div class="ap-text">
          <span class="ap-title">JCB-1208M 可擴充應用附件</span><br>
          1. 12V(汽車點菸座)和5V(USB充電口)電源模組<br>
-         2. 機車充電/供電專用接線組<br>
-         3. 車輛維修燈(12V)<br>
+         2. 機車充電/供電專用接線組(15A電流承受)<br>
+         3. IP68等級車輛維修燈(12V)<br>
       </div>
 
       </div>

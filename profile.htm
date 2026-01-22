@@ -8,6 +8,42 @@
   <base target="_self">
 
   <link rel="stylesheet" href="site_style.css">
+  <style>
+    /* ===== pan.jpg 淡入動畫（不影響 Google 翻譯）===== */
+    .pan-wrap{
+      text-align:center;
+      margin-top: 12px;
+    }
+    .pan-img{
+      max-width: 90%;
+      height: auto;
+      display: block;
+      margin: 0 auto;
+    }
+    .pan-caption{
+      margin-top: 8px;
+      font-size: 14px;
+      color: #555;
+      line-height: 1.6;
+    }
+    .fade-in-pan{
+      opacity: 0;
+      transform: translateY(10px);
+      animation: panFadeIn 900ms ease-out 120ms forwards;
+      will-change: opacity, transform;
+    }
+    @keyframes panFadeIn{
+      to{ opacity: 1; transform: translateY(0); }
+    }
+    @media (prefers-reduced-motion: reduce){
+      .fade-in-pan{
+        opacity: 1;
+        transform: none;
+        animation: none;
+      }
+    }
+  </style>
+
   <script src="site_ui.js" defer></script>
 
   <script>
@@ -148,15 +184,16 @@
     <!-- 單一中文原文（所有語言一律由 Google 翻譯） -->
     <div class="profile-content">
       <div id="companyScrollBox" class="auto-scroll-box" tabindex="0" aria-label="公司簡介（可用滑鼠滾輪捲動）">
-        公司成立於2005年，是具有代客專業設計與製造的公司(ODM)。
-        從一開始的產品開發、設計到最終的製造出廠，我們都提供最完善的服務。<br><br>
+        公司於2005年在台灣設立，我們是具有代客專業設計與製造(ODM)一體化服務能力的公司。
+        從一開始的產品開發、設計到最終的製造出廠，我們都提供最完善的服務。<br>
 
-        我們的產品包括了家用電瓶充電器(BATTERY CHARGER in home)，車用副電瓶充電器(Auxiliary BATTERY CHARGER in vehicle)，
+        我們提供客製化的微電腦控制電路設計與程式撰寫，並提供小量的成品生產服務，有效的幫助中、小、微型企業在產品開發或生產應用上的良好支持。
+        除客製化服務外，我們也提供自家生產產品包括了家用電瓶充電器(BATTERY CHARGER in home)，車用副電瓶充電器(Auxiliary BATTERY CHARGER in vehicle)，
 	車用副電瓶隔離器(BATTERY ISOLATOR)，同步/異步多線程循環定時器(Synchronous/Asynchronous Multithreaded Loop Timer)，
 	AC/DC瓦時功率計(AC/DC watt-hour power meter)，水族箱整合控制器(Aquarium integrated controller)，
         以及各種非制式電器設備之偵測與自動控制等。以上產品都可依客戶需要設計，並接受小量ODM訂單服務。<br><br><br>
 
-        
+
         在設計理念中，我們強調三個要素︰
         <div class="profile-highlight">專業　｜　人性化　｜　創新</div>
         在每一次產品的誕生背後，我們始終記得，科技的核心不是冷冰冰的數據，而是人。專業，是我們面對複雜工程時不妥協的態度；
@@ -164,7 +201,7 @@
         成為陪伴生活的力量。每一次改良、每一次試驗、甚至每一次被否定，都是讓我們更接近真正觸動人心的設計。
         當一項產品不再只是功能，而是能讓人感到被理解、被照顧、被尊重，那才是我們最期待的時刻。
         專業讓品質被看見，創新讓未來被看見，而人性化，讓我們彼此被看見。
-        
+
         <br><br><br>
 
         在公司的經營理念上，我們強調三個要素︰
@@ -176,6 +213,12 @@
         <br>
 
         我們正盼望能得到貴公司之支持與指教，讓我們有機會為您服務，並成為您事業更為茁壯的夥伴。
+
+        <br><br>
+        <div class="pan-wrap fade-in-pan">
+          <img src="pan.jpg" alt="專利證書" class="pan-img">
+          <div class="pan-caption">本公司有多項新型專利，若有需要亦可代 ODM 客戶申請專利服務</div>
+        </div>
       </div>
 
       <div class="scroll-hint">滑鼠滾輪可手動捲動；未操作時自動慢捲；滑入內容區暫停。</div>
