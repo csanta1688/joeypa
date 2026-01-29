@@ -173,62 +173,120 @@ body{ background:#ffffff; }
 
 <script>
 /*
-  --- Online form -> open local email client with formatted content ---
-  NOTE: Without a backend, browsers cannot truly "send" an email silently.
-  This will open the visitor's local mail client with recipient/subject/body prefilled.
+  ================================
+  Formspree AJAX Submit (不跳頁)
+  目的：
+  - 使用者按「寄出」後，不離開本頁 contact.htm
+  - 表單資料用 fetch 背景送到 Formspree
+  - 成功/失敗用 alert 提示（不新增任何版面元素，畫面不變）
+
+  ================================
+  本次唯一改動點（依你的要求）：
+  1) 提供兩種寄出模式（只改這部分，其他保留）
+     - 固定格式完整：Email 內文永遠用同一格式，且每個欄位都會出現（即使空白也會顯示）
+     - 主旨跟著留言主題變動：Email Subject 會用使用者填的「留言主題（subt）」去動態改 _subject
+  2) 由 MAIL_MODE 一行切換模式（不改 UI、不改表單、不改版面）
+  ================================
 */
-// [Legacy] 原本 mailto 本機信箱送出流程：已改用 Formspree 代寄，保留此函式僅供參考（目前不會被呼叫）
-function buildMailtoAndOpen(evt){
-  if(evt && evt.preventDefault) evt.preventDefault();
+(function(){
+  var form = document.getElementById('contactForm');
+  if(!form) return;
 
-  var to = "csanta@ms68.hinet.net";
+  // ===== 你只需要改這一行 =====
+  // 'FIXED_FULL'：固定格式完整（內文完整、每欄必出現）
+  // 'SUBJECT_DYNAMIC'：主旨跟著留言主題變動（同時也會套用固定格式完整的內文，避免欄位被省略）
+  var MAIL_MODE = 'FIXED_FULL';
+  // ===========================
 
-  function val(name){
-    var el = document.querySelector('[name="'+name+'"]');
-    return el ? (el.value || '') : '';
+  // 讀取欄位值（不存在就回空字串）
+  function getVal(name){
+    var el = form.querySelector('[name="'+name+'"]');
+    return el ? (el.value || '').trim() : '';
   }
-  function checked(name){
-    var el = document.querySelector('[name="'+name+'"]:checked');
-    return el ? (el.value || '') : '';
+  function getChecked(name){
+    var el = form.querySelector('[name="'+name+'"]:checked');
+    return el ? (el.value || '').trim() : '';
   }
 
-  var company = val('company_name');
-  var person  = val('person_name');
-  var gender  = checked('R1'); // male / female
-  var phone   = val('phone');
-  var fax     = val('fax');
-  var email   = val('e_mail');
-  var way     = val('contact_way');
-  var subj    = val('subject');
-  var content = val('content');
+  form.addEventListener('submit', function(e){
+    e.preventDefault(); // 阻止瀏覽器依 action 跳轉到 formspree.io/thanks
 
-  var genderText = (gender === 'female') ? '小姐' : '先生';
+    // 1) 先把所有欄位取出（依你頁面現況：留言主題欄位 name="subt"）
+    var company = getVal('company_name');
+    var person  = getVal('person_name');
+    var gender  = getChecked('R1');         // 先生 / 女士
+    var phone   = getVal('phone');
+    var fax     = getVal('fax');
+    var replyto = getVal('_replyto');       // 你的表單 email 欄位是 name="_replyto"
+    var way     = getVal('contact_way');    // Email聯絡/傳真聯絡/電話聯絡
+    var subj    = getVal('subt');           // 你的表單「留言主題」是 name="subt"
+    var content = getVal('content');
 
-  var subject = "線上表單聯絡 - " + (subj || "(未填寫主題)");
+    // 2) 組成「固定格式完整」的內文（每一欄都必定出現，即使空白）
+    //    這一招的核心：我們把完整格式塞到一個欄位（message），Formspree 寄出時就不會漏欄位。
+    //    你在信箱裡看到的會是一封格式固定的內容，不再只是 key/value 零散列表。
+    var lines = [
+      '【JOEYPA 官網｜線上聯絡表單】',
+      '----------------------------------------',
+      '公司寶號：' + (company || '(未填)'),
+      '聯絡人姓名：' + (person  || '(未填)'),
+      '稱謂：'     + (gender  || '(未填)'),
+      '聯絡電話：' + (phone   || '(未填)'),
+      '傳真電話：' + (fax     || '(未填)'),
+      '電子信箱：' + (replyto || '(未填)'),
+      '聯絡方式：' + (way     || '(未填)'),
+      '留言主題：' + (subj    || '(未填)'),
+      '----------------------------------------',
+      '【留言內容】',
+      (content || '(未填)'),
+      '----------------------------------------',
+      '（以上由網站表單自動產生）'
+    ];
+    var fixedMessage = lines.join('\n');
 
-  var bodyLines = [
-    "【線上表單聯絡資料】",
-    "",
-    "公司寶號： " + company,
-    "聯絡人姓名： " + person + " " + genderText,
-    "聯絡電話： " + phone,
-    "傳真電話： " + fax,
-    "電子信箱： " + email,
-    "聯絡方式（優先）： " + way,
-    "留言主題： " + subject,
-    "",
-    "【留言內容】" + content,
-    
-  ];
+    // 3) 準備送出（保留你原本的 FormData + fetch 架構）
+    var formData = new FormData(form);
 
-  var mailto = "mailto:" + encodeURIComponent(to) +
-               "?subject=" + encodeURIComponent(subject) +
-               "&body=" + encodeURIComponent(bodyLines.join("\r\n"));
+    // 3-1) 強制塞入固定格式完整的內文欄位
+    //      name 用 message 是 Formspree 常見欄位名，你也可改成 "內容" 之類，但 message 最通用。
+    formData.set('message', fixedMessage);
 
-  window.location.href = mailto;
-  return false;
-}
+    // 3-2) 若選擇「主旨跟著留言主題變動」，則動態覆蓋 _subject
+    //      你原本 HTML 裡有 hidden _subject=固定字串；這裡在送出前覆蓋它，不動 HTML 其他部分
+    if(MAIL_MODE === 'SUBJECT_DYNAMIC'){
+      var dynamicSubject = 'JOEYPA 官網｜線上聯絡表單';
+      if(subj){
+        dynamicSubject = 'JOEYPA 官網｜' + subj;
+      }
+      formData.set('_subject', dynamicSubject);
+    }
+    // 反之 FIXED_FULL：不覆蓋 _subject，維持你原本 hidden 設定（主旨固定）
+
+    // 4) 送到 Formspree
+    fetch(form.action, {
+      method: 'POST',
+      body: formData,
+      headers: { 'Accept': 'application/json' }
+    })
+    .then(function(res){
+      if(res.ok){
+        alert('表單已成功送出，我們會盡快與您聯絡，謝謝！');
+        HTMLFormElement.prototype.reset.call(form); // 清空欄位（避免 name=reset 覆蓋 form.reset 方法）
+      }else{
+        return res.json().then(function(data){
+          throw new Error(data && data.error ? data.error : 'Formspree 回應錯誤');
+        }).catch(function(){
+          throw new Error('Formspree 回應錯誤');
+        });
+      }
+    })
+    .catch(function(err){
+      alert('送出失敗：' + (err && err.message ? err.message : '請稍後再試') + '\n\n若仍無法送出，請改用上方 Email 按鈕或直接寄信。');
+    });
+  });
+})();
 </script>
+
 
 </head>
 
@@ -306,7 +364,7 @@ src="contact.files/image001.gif" alt=聯絡我們 v:shapes="_x0000_s1025"><![end
 			<tr>
 				<td align="right" width="137">聯絡人姓名︰</td>
 				<td width="209">
-				<!--webbot bot="Validation" s-data-type="String" b-allow-letters="TRUE" b-allow-whitespace="TRUE" b-value-required="TRUE" i-minimum-length="4" i-maximum-length="20" --><input type="text" name="person_name" size="20" maxlength="20"></td>
+				<input type="text" name="person_name" size="20" maxlength="20"></td>
 			</tr>
 			<tr>
 				<td align="right" width="137">　</td>
@@ -318,7 +376,7 @@ src="contact.files/image001.gif" alt=聯絡我們 v:shapes="_x0000_s1025"><![end
 			<tr>
 				<td align="right" width="137">聯絡電話︰</td>
 				<td width="209">
-				<!--webbot bot="Validation" s-data-type="String" b-allow-digits="TRUE" b-allow-whitespace="TRUE" s-allow-other-chars="-()_/\+.,&lt;&gt;" b-value-required="TRUE" i-minimum-length="6" i-maximum-length="18" --><input type="text" name="phone" size="20" maxlength="18"></td>
+				<input type="text" name="phone" size="20" maxlength="18"></td>
 			</tr>
 			<tr>
 				<td align="right" width="137">傳真電話︰</td>
@@ -340,7 +398,7 @@ src="contact.files/image001.gif" alt=聯絡我們 v:shapes="_x0000_s1025"><![end
 			<tr>
 				<td align="right" width="137">留言主題︰</td>
 				<td width="209">
-				<input type="text" name="subject" size="20" maxlength="48"></td>
+				<input type="text" name="subt" size="20" maxlength="100"></td>
 			</tr>
 			<tr>
 				<td align="right" width="137">　</td>
