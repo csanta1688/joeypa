@@ -215,10 +215,10 @@ function buildMailtoAndOpen(evt){
     "傳真電話： " + fax,
     "電子信箱： " + email,
     "聯絡方式（優先）： " + way,
-    "留言主題： " + subj,
+    "留言主題： " + subject,
     "",
-    "【留言內容】",
-    content
+    "【留言內容】" + content,
+    
   ];
 
   var mailto = "mailto:" + encodeURIComponent(to) +
@@ -340,7 +340,7 @@ src="contact.files/image001.gif" alt=聯絡我們 v:shapes="_x0000_s1025"><![end
 			<tr>
 				<td align="right" width="137">留言主題︰</td>
 				<td width="209">
-				<!--webbot bot="Validation" b-value-required="TRUE" i-minimum-length="2" i-maximum-length="48" --><input type="text" name="subject" size="20" maxlength="48"></td>
+				<input type="text" name="subject" size="20" maxlength="48"></td>
 			</tr>
 			<tr>
 				<td align="right" width="137">　</td>
