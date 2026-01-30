@@ -380,6 +380,9 @@ body{ background:#ffffff; }
         '<br><br>若仍無法送出，請改用上方 Email 按鈕或直接寄信。',
         'error'
       );
+      document.getElementById('submitMsg') &&
+      document.getElementById('submitMsg').scrollIntoView({ behavior:'smooth', block:'start' });
+
     });
   });
 })();
@@ -575,7 +578,11 @@ src="contact.files/image001.gif" alt=聯絡我們 v:shapes="_x0000_s1025"><![end
 				<td width="60" align="right" bgcolor="#FFFFCC">
 				<p align="center">
 				<a href="mailto:csanta@ms68.hinet.net?subject=Contact JOEYPA from Homepage"
-                   onclick="showSubmitMsg('提醒：此按鈕會嘗試開啟您電腦或手機上的郵件程式（如 Outlook、Gmail App）。<br><br>若您尚未設定郵件程式，可能不會有任何反應，這並非網站故障。<br><br>若無法開啟郵件程式，請改用上方「線上表單」，可確保訊息成功送達。','info');">
+                   onclick="showSubmitMsg('提醒：此按鈕會嘗試開啟您電腦或手機上的郵件程式（如 Outlook、Gmail App）。<br><br>若您尚未設定郵件程式，可能不會有任何反應，這並非網站故障。<br><br>若無法開啟郵件程式，請改用上方「線上表單」，可確保訊息成功送達。','info');
+                   document.getElementById('submitMsg') &&
+                   document.getElementById('submitMsg').scrollIntoView({ behavior:'smooth', block:'start' });
+
+                   ">
 				<img border="0" src="mail.gif" width="23" height="18"></a></td>
 			</tr>
 		</table>
@@ -634,6 +641,9 @@ src="contact.files/image001.gif" alt=聯絡我們 v:shapes="_x0000_s1025"><![end
         '<br><br>若仍無法送出，請改用上方 Email 按鈕或直接寄信。',
         'error'
       );
+      document.getElementById('submitMsg') &&
+      document.getElementById('submitMsg').scrollIntoView({ behavior:'smooth', block:'start' });
+
     });
   });
 })();
