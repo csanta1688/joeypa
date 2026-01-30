@@ -362,6 +362,8 @@ body{ background:#ffffff; }
       if(res.ok){
         /* ★修改點：成功提示（綠底 + 10秒隱藏，顯示在按鈕下方） */
         showSubmitMsg('表單已成功送出，我們會盡快與您聯絡，謝謝！', 'success');
+        document.getElementById('submitMsg') && 
+        document.getElementById('submitMsg').scrollIntoView({ behavior:'smooth', block:'start' });
         HTMLFormElement.prototype.reset.call(form);
       }else{
         return res.json().then(function(data){
@@ -614,6 +616,8 @@ src="contact.files/image001.gif" alt=聯絡我們 v:shapes="_x0000_s1025"><![end
       if(res.ok){
         /* ★修改點：成功提示（綠底 + 10秒隱藏） */
         showSubmitMsg('表單已成功送出，我們會盡快與您聯絡，謝謝！','success');
+        document.getElementById('submitMsg') && 
+        document.getElementById('submitMsg').scrollIntoView({ behavior:'smooth', block:'start' });
         HTMLFormElement.prototype.reset.call(form);
       }else{
         return res.json().then(function(data){
