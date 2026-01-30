@@ -1,217 +1,350 @@
-<html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns="http://www.w3.org/TR/REC-html40">
-
+<!doctype html>
+<html lang="zh-Hant">
 <head>
-<meta http-equiv="Content-Language" content="zh-tw">
-<meta name="GENERATOR" content="Microsoft FrontPage 6.0">
-<meta name="ProgId" content="FrontPage.Editor.Document">
-<meta http-equiv="Content-Type" content="text/html; charset=big5">
-<link rel="File-List" href="news.files/filelist.xml">
-<title>³Ì·s®ø®§</title>
-<style>
-<!--
-BODY{
-scrollbar-face-color:#F6F6FF;
-scrollbar-arrow-color:#3CA0FF;
-scrollbar-track-color:#ffffff;
-scrollbar-shadow-color:#F6F6FF;
-scrollbar-highlight-color:#F6F6FF;
-scrollbar-3dlight-color:#3CA0FF;
-scrollbar-darkshadow-Color:#3CA0FF;
-}
--->
-</style>
-<!--[if !mso]>
-<style>
-v\:*         { behavior: url(#default#VML) }
-o\:*         { behavior: url(#default#VML) }
-.shape       { behavior: url(#default#VML) }
-</style>
-<![endif]--><!--[if gte mso 9]>
-<xml><o:shapedefaults v:ext="edit" spidmax="1027"/>
-</xml><![endif]-->
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>æœ€æ–°æ¶ˆæ¯ / æ–°æ¶ˆæ¯ç™¼å¸ƒ</title>
+
+  <!-- âœ… è‹¥ä½ åŸæœ¬ç¶²ç«™æœ‰å…±ç”¨ CSSï¼ˆå»ºè­°æ²¿ç”¨ä»¥ä¸€è‡´åŒ–ï¼‰ï¼Œå–æ¶ˆè¨»è§£ä¸¦æ”¹æˆä½ çš„è·¯å¾‘ -->
+  <!-- <link rel="stylesheet" href="./css/common.css"> -->
+
+  <style>
+    /* =========================
+       0) åŸºæœ¬ä¸€è‡´åŒ–è¨­å®š
+       ========================= */
+    :root{
+      --main-border: #caa25a;
+      --main-blue: #2a66ff;
+      --card-bg: #f6f3ea;      /* æ¶ˆæ¯å¡ç‰‡åº•è‰² */
+      --title-red: #d00000;
+      --text-black: #222;
+
+      --shadow: 0 2px 10px rgba(0,0,0,0.06);
+      --shadow-hover: 0 10px 24px rgba(0,0,0,0.14);
+
+      --card-border: rgba(0,0,0,0.10);
+      --card-border-hover: rgba(42,102,255,0.35);
+    }
+
+    body{
+      margin:0;
+      font-family: "Microsoft JhengHei", "PingFang TC", "Noto Sans TC", Arial, sans-serif;
+      color: var(--text-black);
+      background:#ffffff;
+    }
+
+    /* =========================
+       1) å·¦å´å›ºå®šæŒ‰éµå€ï¼ˆå·¦å´ä¸­é–“ã€ä¸‰æŒ‰éµï¼‰
+       ========================= */
+    .left-nav {
+      position: fixed;
+      left: 22px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      z-index: 999;
+    }
+
+    .nav-btn{
+      min-width: 120px;
+      padding: 10px 14px;
+      border-radius: 28px;
+      border: 2px solid var(--main-border);
+      background: #fff;
+      color: var(--main-blue);
+      font-size: 16px;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      text-align: center;
+      user-select: none;
+    }
+    .nav-btn:hover{
+      filter: brightness(0.98);
+    }
+
+    /* =========================
+       2) ä¸­é–“å¤§æ¡†ï¼ˆç½®ä¸­ã€é‚Šæ¡†ã€ä¸Šæ–¹Logoå›ºå®šï¼‰
+       ========================= */
+    .page-wrap{
+      width: 100%;
+      min-height: 100vh;
+      display:flex;
+      justify-content:center;
+      align-items:flex-start;
+      padding: 60px 20px; /* ä¸Šä¸‹ç•™ç™½ */
+      box-sizing: border-box;
+    }
+
+    .main-frame{
+      width: min(1050px, 92vw);
+      border: 3px solid var(--main-border);
+      border-radius: 18px;
+      padding: 26px 28px 22px;
+      box-sizing: border-box;
+      background:#fff;
+      position: relative;
+    }
+
+    /* âœ… å¤§æ¡†æ¶ä¸Šæ–¹ä¸­é–“å›ºå®šåœ–æª”ï¼ˆimage001.gifï¼‰ */
+    .frame-top-logo{
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      margin: 2px 0 10px 0;
+      user-select: none;
+    }
+    .frame-top-logo img{
+      max-width: 240px;     /* ä½ å¯èª¿æ•´ */
+      height: auto;
+      display:block;
+    }
+
+    /* ä¸­é–“æ¨™é¡Œ */
+    .page-title{
+      text-align:center;
+      color: var(--main-blue);
+      font-size: 28px;
+      margin: 0 0 14px 0;
+      letter-spacing: 1px;
+    }
+
+    /* =========================
+       3) æ¶ˆæ¯åˆ—è¡¨å®¹å™¨ï¼šå¯æ²å‹•
+       ========================= */
+    .news-scroll{
+      height: 70vh;
+      overflow-y: auto;
+      padding: 10px 8px;
+      box-sizing: border-box;
+      scroll-behavior: smooth;
+    }
+
+    /* =========================
+       4) å–®ç­†æ¶ˆæ¯å¡ç‰‡ï¼ˆå¯è¤‡è£½å¥—ç”¨ï¼‰ + hover é«˜äº®/é™°å½±è®ŠåŒ–
+       ========================= */
+    .news-item{
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 14px 14px;
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 14px;
+      align-items: start;
+      border: 1px solid var(--card-border);
+      box-shadow: 0 1px 6px rgba(0,0,0,0.05);
+      margin: 14px 0;
+
+      transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease, filter 160ms ease;
+      will-change: transform, box-shadow;
+    }
+
+    /* âœ… hover æ•ˆæœï¼šæ›´äº®ã€é™°å½±æ›´é‡ã€å¾®ä¸Šæµ®ã€é‚Šæ¡†å¸¶è— */
+    .news-item:hover{
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-hover);
+      border-color: var(--card-border-hover);
+      filter: brightness(1.02);
+    }
+
+    .news-item img{
+      width: 120px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 10px;
+      background:#eee;
+      border: 1px solid rgba(0,0,0,0.10);
+      display:block;
+    }
+
+    .news-text .news-title{
+      margin: 0;
+      padding: 0;
+      color: var(--title-red);
+      font-size: 20px;
+      font-weight: 700;
+      line-height: 1.15;
+    }
+
+    .news-text .news-body{
+      margin: 0;
+      color: var(--text-black);
+      font-size: 16px;
+      line-height: 1.35;
+      white-space: pre-line;
+    }
+
+    /* å°è¢å¹•èª¿æ•´ */
+    @media (max-width: 720px){
+      .left-nav { left: 10px; }
+      .nav-btn { min-width: 96px; font-size: 14px; padding: 9px 12px; }
+      .main-frame{ padding: 20px 16px; }
+      .page-title{ font-size: 22px; }
+      .frame-top-logo img{ max-width: 180px; }
+    }
+  </style>
+
+  <script>
+    /* ===== Google ç¿»è­¯ç¹¼æ‰¿ï¼ˆå¾ main.htm åŒæ­¥è€Œä¾†ï¼ŒNEWS ä¸é¡¯ç¤ºèªè¨€ä¸‹æ‹‰ï¼‰===== */
+    const SITE_FROM_LANG = "zh-TW";
+    const SITE_LANG_KEY  = "site_lang";
+    const SITE_LANG_LIST = "en,ja,ko,zh-CN,fr,de,es,vi,th,id,ar,fa,tr,zh-TW";
+
+    function setGoogTransCookie(fromLang, toLang) {
+      const v = "/" + fromLang + "/" + toLang;
+      document.cookie = "googtrans=" + v + ";path=/";
+      document.cookie = "googtrans=" + v + ";path=/;SameSite=Lax";
+    }
+    function clearGoogTransCookie() {
+      document.cookie = "googtrans=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
+      document.cookie = "googtrans=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;SameSite=Lax";
+    }
+    function getCookie(name){
+      const m = document.cookie.match(new RegExp("(^|;\\s*)" + name + "=([^;]*)"));
+      return m ? decodeURIComponent(m[2]) : "";
+    }
+    function getLangFromGoogtransCookie(){
+      const gt = getCookie("googtrans"); // e.g. /zh-TW/ja
+      const m = gt.match(/^\/([^\/]+)\/([^\/]+)$/);
+      if(!m) return null;
+      return { from: m[1], to: m[2] };
+    }
+    function getSavedLangSafe() {
+      const v = localStorage.getItem(SITE_LANG_KEY);
+      if (v && v !== "null" && v !== "undefined") return v;
+
+      const gt = getLangFromGoogtransCookie();
+      if (gt && gt.to) return gt.to;
+
+      return "original";
+    }
+
+    // é€²é å…ˆæŠŠ cookie å¥—å¥½ï¼ˆè®“ element.js åˆå§‹åŒ–æ™‚è®€å¾—åˆ°ï¼‰
+    (function autoApplySavedLang(){
+      const lang = getSavedLangSafe();
+      if (lang === "original") clearGoogTransCookie();
+      else setGoogTransCookie(SITE_FROM_LANG, lang);
+    })();
+
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({
+        pageLanguage: SITE_FROM_LANG,
+        includedLanguages: SITE_LANG_LIST,
+        autoDisplay: false
+      }, 'google_translate_element');
+    }
+
+    // bfcache/è¿”å›æ™‚è£œå¼·ï¼šç¢ºä¿ä»æ²¿ç”¨ main çš„èªè¨€
+    window.addEventListener("pageshow", function(){
+      const lang = getSavedLangSafe();
+      if (lang === "original") return;
+      setGoogTransCookie(SITE_FROM_LANG, lang);
+    });
+  </script>
 </head>
 
-<body style="text-align: center">
-<!------------ ´¡¤J±±¨î½X°Ï¬q¶}©l ------------> 
-<script language="JavaScript1.2">
-var dragswitch=0
-var nsx
+<body>
 
-function drag_dropns(name){
-temp=eval(name)
-temp.captureEvents(Event.MOUSEDOWN | Event.MOUSEUP)
-temp.onmousedown=gons
-temp.onmousemove=dragns
-temp.onmouseup=stopns
-}
+  <!-- âœ… é‡é»ï¼šä¿ç•™ element ä½†ç§»åˆ°ç•«é¢å¤–ï¼ˆä¸è¦ display:noneï¼Œé¿å…ç¿»è­¯ä¸èµ·ä¾†ï¼‰ -->
+  <div id="google_translate_element"
+       style="position:absolute; left:-9999px; top:0; width:1px; height:1px; overflow:hidden;"></div>
 
-function gons(e){
-temp.captureEvents(Event.MOUSEMOVE)
-nsx=e.x
-nsy=e.y
-}
-function dragns(e){
-if (dragswitch==1){
-temp.moveBy(e.x-nsx,e.y-nsy)
-return false
-}
-}
+  <!-- =========================
+       å·¦å´å›ºå®šæŒ‰éµå€ï¼ˆå·¦å´ä¸­é–“ï¼‰
+       ========================= -->
+  <div class="left-nav">
+    <a class="nav-btn" href="main.htm" style="text-decoration:none;">å›é¦–é </a>
+    <button class="nav-btn" type="button" id="btnTop">TOP</button>
+    <button class="nav-btn" type="button" id="btnBottom">BOTTOM</button>
+  </div>
 
-function stopns(){
-temp.releaseEvents(Event.MOUSEMOVE)
-}
+  <!-- =========================
+       ä¸­é–“å…§å®¹å¤§æ¡†
+       ========================= -->
+  <div class="page-wrap">
+    <div class="main-frame">
 
-//drag drop function for IE 4+////
-/////////////////////////////////
-
-var dragapproved=false
-
-function drag_dropie(){
-if (dragapproved==true){
-document.all.showimage.style.pixelLeft=tempx+event.clientX-iex
-document.all.showimage.style.pixelTop=tempy+event.clientY-iey
-return false
-}
-}
-
-function initializedragie(){
-iex=event.clientX
-iey=event.clientY
-tempx=showimage.style.pixelLeft
-tempy=showimage.style.pixelTop
-dragapproved=true
-document.onmousemove=drag_dropie
-}
-
-if (document.all){
-document.onmouseup=new Function("dragapproved=false")
-}
-
-////drag drop functions end here//////
-
-function hidebox(){
-if (document.all)
-showimage.style.visibility="hidden"
-else if (document.layers)
-document.showimage.visibility="hide"
-}
-</script> 
-<div id="showimage" style="position: absolute; width: 210px; left: 50px; top: 15px; height: 60px" align="center">
-<table border="1" cellspacing="0" width="208" bordercolor="#E1B5FF" cellpadding="0">
-<tr>
-<td onMousedown="initializedragie()" style="cursor:hand" bgcolor="#E1B5FF"><a href="#" onClick="hidebox();return false">
-<p align="center"><font color="#4C4C4C" face="·s²Ó©úÅé">
-<span style="text-decoration: none">ÀY±ø·s»D</span></font></a></td>
-</tr>
-<tr>
-<td onMousedown="initializedragie()" style="cursor:hand" bgcolor="#FFFFFF" height="30">
-<p align="left">
-<font face="·s²Ó©úÅé">´£¿ô±z¡I¥Ø«e¦³«P¾P¬¡°Ê¡ã½Ğ¬d¸ß®ø®§002¡C</font></td>
-</tr>
-</table>
-</div> 
-<!------------ ´¡¤J±±¨î½X°Ï¬qµ²§ô ------------> 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"> 
-<p align="center"><!--[if gte vml 1]><v:shapetype id="_x0000_t136"
- coordsize="21600,21600" o:spt="136" adj="10800" path="m@7,l@8,m@5,21600l@6,21600e">
- <v:formulas>
-  <v:f eqn="sum #0 0 10800"/>
-  <v:f eqn="prod #0 2 1"/>
-  <v:f eqn="sum 21600 0 @1"/>
-  <v:f eqn="sum 0 0 @2"/>
-  <v:f eqn="sum 21600 0 @3"/>
-  <v:f eqn="if @0 @3 0"/>
-  <v:f eqn="if @0 21600 @1"/>
-  <v:f eqn="if @0 0 @2"/>
-  <v:f eqn="if @0 @4 21600"/>
-  <v:f eqn="mid @5 @6"/>
-  <v:f eqn="mid @8 @5"/>
-  <v:f eqn="mid @7 @8"/>
-  <v:f eqn="mid @6 @7"/>
-  <v:f eqn="sum @6 0 @5"/>
- </v:formulas>
- <v:path textpathok="t" o:connecttype="custom" o:connectlocs="@9,0;@10,10800;@11,21600;@12,10800"
-  o:connectangles="270,180,90,0"/>
- <v:textpath on="t" fitshape="t"/>
- <v:handles>
-  <v:h position="#0,bottomRight" xrange="6629,14971"/>
- </v:handles>
- <o:lock v:ext="edit" text="t" shapetype="t"/>
-</v:shapetype><v:shape id="_x0000_s1025" type="#_x0000_t136" alt="®ø®§¦Cªí"
- style='width:147pt;height:36pt' fillcolor="red" stroked="f">
- <v:fill color2="#fc0" focus="50%" type="gradient"/>
- <v:shadow on="t" color="#4d4d4d" opacity="52429f" offset=",3pt"/>
- <v:textpath style='font-family:"¼Ğ·¢Åé";font-weight:bold;v-text-spacing:78650f;
-  v-text-reverse:t;v-text-kern:t' trim="t" fitpath="t" string="®ø®§¦Cªí"/>
-</v:shape><![endif]--><![if !vml]><img border=0 width=249 height=65
-src="news.files/image001.gif" alt=®ø®§¦Cªí v:shapes="_x0000_s1025"><![endif]></p>
-<div align="center">
-  <center>
-  <table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse; border: 2px dashed #FFB0B0" width="72%" id="AutoNumber1">
-    <tr>
-      <td width="17%">
-      <p align="center" style="margin-top: 5; margin-bottom: 5">
-      <img border="0" src="new.gif" width="35" height="13"></td>
-      <td width="44%">
-      <p style="margin-top: 5; margin-bottom: 5">Ãş§O¡J«P¾P¬¡°Ê</p>
-      <p style="margin-top: 5; margin-bottom: 5">µo¥¬®É¶¡¡J93 ¦~ ¤¸ ¤ë 21 ¤é</td> 
-      <td width="38%">
-      <p style="margin-top: 5; margin-bottom: 5">®ø®§½s¸¹¡J002</p>
-      <p style="margin-top: 5; margin-bottom: 5">µo¥¬³æ¦ì¡Jµn¹F¦æ¾P¥ø¹º²Õ</td>
-    </tr>
-    <tr>
-      <td width="95%" colspan="3">
-      <div align="center">
-        <center>
-        <table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="95%" id="AutoNumber2" height="50">
-          <tr>
-            <td width="100%" height="50">
-            <p style="line-height: 150%; margin-top: 5; margin-bottom: 5">
-			¬°¼y¯¬µn¹F°ê»Ú¤»¶g¦~¬ö©À¡A§Y¤é°_¦Ü93¦~3¤ë31¤é¤î¡A¥ş¨t¦C¹q·½Âà´«¾¹(POWER 
-			INVERTER)¶R¤QÃØ¤@(­­¦P¾÷«¬)¡A½Ğ¦U¸g¾P°Ó§â´¤³o¦¸¦n¾÷·|¡I</td>
-          </tr>
-        </table>
-        </center>
+      <div class="frame-top-logo">
+        <img src="news.files/image001.gif" alt="Top Logo">
       </div>
-      </td>
-    </tr>
-  </table>
-  </center>
-</div>
 
-<p align="center">¡@</p>
-  <table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse; border: 2px dashed #FFB0B0" width="72%" id="table1">
-    <tr>
-      <td width="17%">
-      <p align="center" style="margin-top: 5; margin-bottom: 5">
-      <img border="0" src="new.gif" width="35" height="13"></td>
-      <td width="44%">
-      <p style="margin-top: 5; margin-bottom: 5">Ãş§O¡J·s«~µoªí</p>
-      <p style="margin-top: 5; margin-bottom: 5">µo¥¬®É¶¡¡J92 ¦~ 12 ¤ë 1 ¤é</td> 
-      <td width="38%">
-      <p style="margin-top: 5; margin-bottom: 5">®ø®§½s¸¹¡J001</p>
-      <p style="margin-top: 5; margin-bottom: 5">µo¥¬³æ¦ì¡Jµn¹F°ê¤º·~°È³¡</td>
-    </tr>
-    <tr>
-      <td width="95%" colspan="3">
-      <div align="center">
-        <center>
-        <table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="95%" id="table2" height="50">
-          <tr>
-            <td width="100%" height="50">
-            <p style="line-height: 150%; margin-top: 5; margin-bottom: 5">
-			300W¹q·½Âà´«¾¹(DC12V to AC110V POWER 
-			INVERTER)¥ş·s²£«~¶}©l¤W¥«¡A·s²£«~§ï¬°350W¤j¿é¥X¡A¤É¯Å¤£¥[»ù¡A§ó¨ã¥«³õÄvª§¤O¡C</td>
-          </tr>
-        </table>
-        </center>
+      <h1 class="page-title">æœ€æ–°æ¶ˆæ¯</h1>
+
+      <div class="news-scroll" id="newsScroll">
+
+
+<!-- ====================================æœ€é ‚ç«¯ç¬¬ä¸€æ¢æ¶ˆæ¯======================================================== -->
+
+        <div class="news-item">
+          <img src="news.files/N002.jpg" alt="News Image N002" width="120" height="80">
+          <div class="news-text">
+            <div class="news-title">2026é–‹å¹´æ–°ä½œ-æ©Ÿè»Šå°ˆç”¨å¤šåŠŸèƒ½å……é›»å™¨å³å°‡ä¸Šå¸‚ï¼</div>
+            <p class="news-body">
+            2026 /02 /01
+            â—å¸‚é¢ä¸Šç¬¬ä¸€éƒ¨å°ˆç‚ºæ©Ÿè»Šæ—è¨­è¨ˆçš„å¤šåŠŸèƒ½å……é›»å™¨
+            â—å…¨DIYæ¨¡çµ„è¨­è¨ˆï¼Œéœ€è¦å¤šå°‘åŠŸèƒ½è²·å¤šå°‘æ¨¡çµ„DIY
+            â—è®“æ©Ÿè»Šç”¨é›»åƒæ±½è»Šä¸€æ¨£ç°¡å–®ï¼Œæ›´æ˜¯é‡æ©Ÿæ—æ•‘æ˜Ÿ
+            </p>
+          </div>
+        </div>
+
+
+<!-- ====================================ç¬¬äºŒæ¢æ¶ˆæ¯============================================================== -->
+
+        <div class="news-item">
+          <img src="news.files/N001.jpg" alt="News Image N001" width="120" height="80">
+          <div class="news-text">
+            <div class="news-title"> ç¸½ç¶“ç†æ”œä»£ç†å•†å¤¥ä¼´ç™»é ‚æ—¥æœ¬é˜¿çˆ¾å‘æ–¯å±± </div>
+            <p class="news-body">
+            2025 /11 /24
+            å†°å¤©é›ªåœ°ä¸‹é ‚è‘—å¯’é¢¨å†·å†½ï¼Œç¸½ç¶“ç†å¸¶è‘—ä»£ç†å•†å¤¥ä¼´å€‘å…±åŒææ”œç™»é ‚æ—¥æœ¬é˜¿çˆ¾å‘æ–¯å±±é ‚ï¼Œå±•ç¾å‡ºåŒèˆŸå…±æ¿Ÿï¼Œäº‹æ¥­å…±åŒé«”å …å®šäº’åŠ©åˆä½œçš„æ„å¿µï¼
+            </p>
+          </div>
+        </div>
+
+
+
+<!-- ====================================ä»¥ä¸‹ç‚ºå…¬ç”¨ç¨‹å¼ä¸å¯äº‚ä¿®æ”¹================================================= -->
+
       </div>
-      </td>
-    </tr>
-  </table>
-  <p>¡@</p>
-<p>¡@</p>
+    </div>
+  </div>
 
+  <script>
+    // ========= TOP / BOTTOMï¼šå®šä½åˆ°ç¬¬ä¸€ç­† / æœ€å¾Œä¸€ç­†ï¼ˆæ¡†å…§æ²å‹•ï¼‰ =========
+    (function(){
+      const scrollBox = document.getElementById('newsScroll');
+      const btnTop = document.getElementById('btnTop');
+      const btnBottom = document.getElementById('btnBottom');
+
+      function getItems(){
+        return scrollBox ? Array.from(scrollBox.querySelectorAll('.news-item')) : [];
+      }
+
+      function scrollToItem(item){
+        if(!scrollBox || !item) return;
+        const boxRect = scrollBox.getBoundingClientRect();
+        const itemRect = item.getBoundingClientRect();
+        const delta = (itemRect.top - boxRect.top);
+        const targetTop = scrollBox.scrollTop + delta - 8;
+        scrollBox.scrollTo({ top: targetTop, behavior: 'smooth' });
+      }
+
+      btnTop?.addEventListener('click', () => {
+        const items = getItems();
+        if(items.length > 0) scrollToItem(items[0]);
+      });
+
+      btnBottom?.addEventListener('click', () => {
+        const items = getItems();
+        if(items.length > 0) scrollToItem(items[items.length - 1]);
+      });
+    })();
+  </script>
+
+  <!-- element.js æ”¾åœ¨ body å°¾ç«¯ï¼Œç¢ºä¿ç©©å®šåˆå§‹åŒ– -->
+  <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </body>
-
 </html>
