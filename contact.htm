@@ -327,13 +327,17 @@ body{ background:#ffffff; }
     })
     .then(function(res){
       if(res.ok){
-        // ✅ 成功提示：改用頁面 DOM 文字顯示（可被 Google 翻譯）
+        // ✅ 成功提示：醒目底色 + 10秒自動隱藏（可被 Google 翻譯）
         var msg = document.getElementById('submitMsg');
         if (msg) {
+          if (window.__submitMsgTimer) { clearTimeout(window.__submitMsgTimer); }
           msg.innerHTML = '表單已成功送出，我們會盡快與您聯絡，謝謝！';
+          msg.style.backgroundColor = '#D1E7DD';
+          msg.style.borderColor = '#198754';
+          msg.style.color = '#0F5132';
           msg.style.display = 'block';
+          window.__submitMsgTimer = setTimeout(function(){ msg.style.display = 'none'; }, 10000);
         }
-        // 觸發一次語言下拉 change，讓動態顯示文字更容易被即時翻譯
         var combo = document.querySelector('select.goog-te-combo');
         if (combo) combo.dispatchEvent(new Event('change'));
 
@@ -347,12 +351,17 @@ body{ background:#ffffff; }
       }
     })
     .catch(function(err){
-      // ✅ 失敗提示：改用頁面 DOM 文字顯示（可被 Google 翻譯）
+      // ✅ 失敗提示：醒目底色 + 10秒自動隱藏（可被 Google 翻譯）
       var msg = document.getElementById('submitMsg');
       if (msg) {
+        if (window.__submitMsgTimer) { clearTimeout(window.__submitMsgTimer); }
         msg.innerHTML = '送出失敗：' + (err && err.message ? err.message : '請稍後再試') +
                         '<br><br>若仍無法送出，請改用上方 Email 按鈕或直接寄信。';
+        msg.style.backgroundColor = '#F8D7DA';
+        msg.style.borderColor = '#DC3545';
+        msg.style.color = '#842029';
         msg.style.display = 'block';
+        window.__submitMsgTimer = setTimeout(function(){ msg.style.display = 'none'; }, 10000);
       }
       var combo = document.querySelector('select.goog-te-combo');
       if (combo) combo.dispatchEvent(new Event('change'));
@@ -505,13 +514,14 @@ src="contact.files/image001.gif" alt=聯絡我們 v:shapes="_x0000_s1025"><![end
 			</table>
 		</div>
 
-<!-- ✅ 可翻譯的送出結果提示區（取代 alert；Google 翻譯可翻譯 DOM 文字） -->
+<!-- ✅ 可翻譯的提示區塊：預設淡黃底（成功/失敗/提醒會再換成綠/紅/藍），10 秒自動隱藏由 JS 控制 -->
 <div id="submitMsg"
      style="display:none; margin:10px auto; width:500px; max-width:100%;
             padding:10px 12px; border:1px solid #6699FF; border-radius:8px;
+            background-color:#FFF9E6; color:#333333;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.08);
             font-family:'Microsoft JhengHei','標楷體','PMingLiU',serif;
             line-height:1.5;">
-  <!-- 預設文字（成功/失敗會由 JS 覆蓋） -->
   表單送出結果會顯示在這裡。
 </div>
 
@@ -553,7 +563,8 @@ src="contact.files/image001.gif" alt=聯絡我們 v:shapes="_x0000_s1025"><![end
 				<p align="center"><font color="#FFFFFF">JOEYPA 茂果科技信箱</font></td>
 				<td width="60" align="right" bgcolor="#FFFFCC">
 				<p align="center">
-				<a href="mailto:csanta@ms68.hinet.net?subject=Contact JOEYPA from Homepage" onclick="alert('提醒：此按鈕會嘗試開啟您電腦或手機上的郵件程式（如 Outlook、Gmail App）。\n\n若您尚未設定郵件程式，可能不會有任何反應，這並非網站故障。\n\n若無法開啟郵件程式，請改用下方「線上表單」，可確保訊息成功送達。');">
+				<a href="mailto:csanta@ms68.hinet.net?subject=Contact JOEYPA from Homepage"
+                   onclick="(function(){var msg=document.getElementById('submitMsg');if(msg){if(window.__submitMsgTimer){clearTimeout(window.__submitMsgTimer);}msg.innerHTML='提醒：此按鈕會嘗試開啟您電腦或手機上的郵件程式（如 Outlook、Gmail App）。<br><br>若您尚未設定郵件程式，可能不會有任何反應，這並非網站故障。<br><br>若無法開啟郵件程式，請改用下方「線上表單」，可確保訊息成功送達。';msg.style.backgroundColor='#CFE2FF';msg.style.borderColor='#0D6EFD';msg.style.color='#052C65';msg.style.display='block';var combo=document.querySelector('select.goog-te-combo');if(combo) combo.dispatchEvent(new Event('change'));window.__submitMsgTimer=setTimeout(function(){msg.style.display='none';},10000);}})();">
 				<img border="0" src="mail.gif" width="23" height="18"></a></td>
 			</tr>
 		</table>
@@ -594,13 +605,17 @@ src="contact.files/image001.gif" alt=聯絡我們 v:shapes="_x0000_s1025"><![end
     })
     .then(function(res){
       if(res.ok){
-        // ✅ 成功提示：改用頁面 DOM 文字顯示（可被 Google 翻譯）
+        // ✅ 成功提示：醒目底色 + 10秒自動隱藏（可被 Google 翻譯）
         var msg = document.getElementById('submitMsg');
         if (msg) {
+          if (window.__submitMsgTimer) { clearTimeout(window.__submitMsgTimer); }
           msg.innerHTML = '表單已成功送出，我們會盡快與您聯絡，謝謝！';
+          msg.style.backgroundColor = '#D1E7DD';
+          msg.style.borderColor = '#198754';
+          msg.style.color = '#0F5132';
           msg.style.display = 'block';
+          window.__submitMsgTimer = setTimeout(function(){ msg.style.display = 'none'; }, 10000);
         }
-        // 觸發一次語言下拉 change，讓動態顯示文字更容易被即時翻譯
         var combo = document.querySelector('select.goog-te-combo');
         if (combo) combo.dispatchEvent(new Event('change'));
 
@@ -614,12 +629,17 @@ src="contact.files/image001.gif" alt=聯絡我們 v:shapes="_x0000_s1025"><![end
       }
     })
     .catch(function(err){
-      // ✅ 失敗提示：改用頁面 DOM 文字顯示（可被 Google 翻譯）
+      // ✅ 失敗提示：醒目底色 + 10秒自動隱藏（可被 Google 翻譯）
       var msg = document.getElementById('submitMsg');
       if (msg) {
+        if (window.__submitMsgTimer) { clearTimeout(window.__submitMsgTimer); }
         msg.innerHTML = '送出失敗：' + (err && err.message ? err.message : '請稍後再試') +
                         '<br><br>若仍無法送出，請改用上方 Email 按鈕或直接寄信。';
+        msg.style.backgroundColor = '#F8D7DA';
+        msg.style.borderColor = '#DC3545';
+        msg.style.color = '#842029';
         msg.style.display = 'block';
+        window.__submitMsgTimer = setTimeout(function(){ msg.style.display = 'none'; }, 10000);
       }
       var combo = document.querySelector('select.goog-te-combo');
       if (combo) combo.dispatchEvent(new Event('change'));
