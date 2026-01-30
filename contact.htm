@@ -137,39 +137,136 @@ body{ background:#ffffff; }
 .gap-sm{ margin: 8px 0; }
 </style>
 
+<!-- =========================
+     Google 翻譯：與 main.htm 同步（繼承語言）
+     只改這段：讓 contact.htm 和 main.htm 使用同一套 site_lang / cookie 套用邏輯
+     ========================= -->
 <script>
-/*
-  --- Translation sync (Google Website Translator) ---
-  Many sites using Google Translate rely on the "googtrans" cookie.
-  This script reads an existing googtrans cookie OR localStorage value
-  and re-applies it so that language selection stays consistent across pages.
-*/
-(function(){
-  function getCookie(name){
-    var m = document.cookie.match(new RegExp('(?:^|; )' + name.replace(/([.$?*|{}()\\[\\]\\\\\\/\\+^])/g,'\\\\$1') + '=([^;]*)'));
-    return m ? decodeURIComponent(m[1]) : '';
-  }
-  function setCookie(name, value, days){
-    var expires = '';
-    if(days){
-      var d = new Date();
-      d.setTime(d.getTime() + days*24*60*60*1000);
-      expires = '; expires=' + d.toUTCString();
-    }
-    // path=/ is important for cross-page inheritance
-    document.cookie = name + '=' + encodeURIComponent(value) + expires + '; path=/';
+  /* ===== Google 翻譯同步設定（index → main → 子頁）===== */
+  const SITE_FROM_LANG = "zh-TW"; // 主站內容是繁中，統一以 zh-TW 為 source
+  const SITE_LANG_KEY  = "site_lang";
+  const SITE_LANG_LIST = "en,ja,ko,zh-CN,fr,de,es,vi,th,id,ar,fa,tr,zh-TW";
+
+  function setGoogTransCookie(fromLang, toLang) {
+    const v = "/" + fromLang + "/" + toLang;
+    document.cookie = "googtrans=" + v + ";path=/";
+    document.cookie = "googtrans=" + v + ";path=/;SameSite=Lax";
   }
 
-  try{
-    // priority: cookie -> localStorage backup
-    var g = getCookie('googtrans') || localStorage.getItem('googtrans') || '';
-    if(g){
-      setCookie('googtrans', g, 365);
-      localStorage.setItem('googtrans', g);
-    }
-  }catch(e){}
-})();
+  function clearGoogTransCookie() {
+    document.cookie = "googtrans=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
+    document.cookie = "googtrans=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;SameSite=Lax";
+  }
+
+  function getCookie(name){
+    const m = document.cookie.match(new RegExp("(^|;\\s*)" + name + "=([^;]*)"));
+    return m ? decodeURIComponent(m[2]) : "";
+  }
+
+  function getLangFromGoogtransCookie(){
+    const gt = getCookie("googtrans"); // e.g. /zh-CN/ja 或 /zh-TW/ja
+    const m = gt.match(/^\/([^\/]+)\/([^\/]+)$/);
+    if(!m) return null;
+    return { from: m[1], to: m[2] };
+  }
+
+  // 語言來源：localStorage 優先，沒有就用 googtrans cookie
+  function getSavedLangSafe() {
+    const v = localStorage.getItem(SITE_LANG_KEY);
+    if (v && v !== "null" && v !== "undefined") return v;
+
+    const gt = getLangFromGoogtransCookie();
+    if (gt && gt.to) return gt.to;
+
+    return "original";
+  }
+
+  // 判斷目前頁面是否已被 Google Translate 套用
+  function isTranslatedNow(){
+    const de = document.documentElement;
+    return !!(
+      de.classList.contains("translated-ltr") ||
+      de.classList.contains("translated-rtl") ||
+      document.querySelector("iframe.goog-te-banner-frame") ||
+      document.querySelector(".goog-te-spinner-pos")
+    );
+  }
+
+  // 等待 goog-te-combo 出現後，指定語言並觸發 change
+  function forceApplyLangByCombo(){
+    const target = getSavedLangSafe();
+    if (target === "original") return;
+
+    let tries = 0;
+    const maxTries = 50; // 10 秒
+    const timer = setInterval(function(){
+      tries++;
+
+      const combo = document.querySelector("select.goog-te-combo");
+      if (combo) {
+        combo.value = target;
+        combo.dispatchEvent(new Event("change"));
+        clearInterval(timer);
+        return;
+      }
+
+      if (tries >= maxTries) clearInterval(timer);
+    }, 200);
+  }
+
+  // 進頁先把 cookie 套好（讓 element.js 初始化時讀得到）
+  (function autoApplySavedLang(){
+    const lang = getSavedLangSafe();
+    if (lang === "original") clearGoogTransCookie();
+    else setGoogTransCookie(SITE_FROM_LANG, lang); // 統一改回 /zh-TW/xx
+  })();
+
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement({
+      pageLanguage: SITE_FROM_LANG,
+      includedLanguages: SITE_LANG_LIST,
+      autoDisplay: false
+    }, 'google_translate_element');
+
+    // 初始化後立刻強制套用一次（確保第一次載入就翻）
+    forceApplyLangByCombo();
+  }
+
+  // 正常載入時保險再跑一次
+  window.addEventListener("load", function(){
+    const lang = getSavedLangSafe();
+    if (lang === "original") clearGoogTransCookie();
+    else setGoogTransCookie(SITE_FROM_LANG, lang);
+
+    forceApplyLangByCombo();
+  });
+
+  // 返回上一頁（bfcache restore）時：onload 不會跑，所以一定要用 pageshow
+  // 若 combo 套用後仍未翻譯 => 只 reload 一次（避免循環）
+  window.addEventListener("pageshow", function(evt){
+    const lang = getSavedLangSafe();
+    if (lang === "original") return;
+
+    // 先嘗試直接套用
+    setGoogTransCookie(SITE_FROM_LANG, lang);
+    forceApplyLangByCombo();
+
+    // 再檢查：若沒翻譯，做一次性 reload 修復 bfcache 還原不完整
+    setTimeout(function(){
+      if (isTranslatedNow()) return;
+
+      const key = "gt_bfcache_reload_once_contact";
+      if (sessionStorage.getItem(key) === "1") {
+        return;
+      }
+      sessionStorage.setItem(key, "1");
+      location.reload();
+    }, 700);
+  });
 </script>
+<!-- =========================
+     Google 翻譯同步段落結束
+     ========================= -->
 
 <script>
 /*
@@ -223,8 +320,6 @@ body{ background:#ffffff; }
     var content = getVal('content');
 
     // 2) 組成「固定格式完整」的內文（每一欄都必定出現，即使空白）
-    //    這一招的核心：我們把完整格式塞到一個欄位（message），Formspree 寄出時就不會漏欄位。
-    //    你在信箱裡看到的會是一封格式固定的內容，不再只是 key/value 零散列表。
     var lines = [
       '【JOEYPA 官網｜線上聯絡表單】',
       '----------------------------------------',
@@ -248,11 +343,9 @@ body{ background:#ffffff; }
     var formData = new FormData(form);
 
     // 3-1) 強制塞入固定格式完整的內文欄位
-    //      name 用 message 是 Formspree 常見欄位名，你也可改成 "內容" 之類，但 message 最通用。
     formData.set('message', fixedMessage);
 
     // 3-2) 若選擇「主旨跟著留言主題變動」，則動態覆蓋 _subject
-    //      你原本 HTML 裡有 hidden _subject=固定字串；這裡在送出前覆蓋它，不動 HTML 其他部分
     if(MAIL_MODE === 'SUBJECT_DYNAMIC'){
       var dynamicSubject = 'JOEYPA 官網｜線上聯絡表單';
       if(subj){
@@ -260,7 +353,6 @@ body{ background:#ffffff; }
       }
       formData.set('_subject', dynamicSubject);
     }
-    // 反之 FIXED_FULL：不覆蓋 _subject，維持你原本 hidden 設定（主旨固定）
 
     // 4) 送到 Formspree
     fetch(form.action, {
@@ -271,7 +363,7 @@ body{ background:#ffffff; }
     .then(function(res){
       if(res.ok){
         alert('表單已成功送出，我們會盡快與您聯絡，謝謝！');
-        HTMLFormElement.prototype.reset.call(form); // 清空欄位（避免 name=reset 覆蓋 form.reset 方法）
+        HTMLFormElement.prototype.reset.call(form);
       }else{
         return res.json().then(function(data){
           throw new Error(data && data.error ? data.error : 'Formspree 回應錯誤');
@@ -291,6 +383,10 @@ body{ background:#ffffff; }
 </head>
 
 <body bgproperties="fixed">
+
+<!-- ⚠️ 不用 display:none，避免翻譯不啟動 -->
+<div id="google_translate_element"
+     style="position:absolute; left:-9999px; top:0; width:1px; height:1px; overflow:hidden;"></div>
 
 <a class="home-float" href="main.htm" title="回首頁"><span class="dot"></span>回主頁</a>
 
@@ -344,11 +440,6 @@ src="contact.files/image001.gif" alt=聯絡我們 v:shapes="_x0000_s1025"><![end
 
       <!-- Form submit now opens local email client with formatted body -->
       <form id="contactForm" method="POST" action="https://formspree.io/f/mlgngpyd" accept-charset="utf-8">
-      <!-- ================== Formspree settings (hidden, no UI change) ==================
-           1) _subject  : email subject shown in your inbox
-           2) _gotcha   : honeypot field to reduce spam bots (humans won't fill)
-           3) _language : optional note (for your own sorting) - kept hidden
-      ================================================================================ -->
       <input type="hidden" name="_subject" value="JOEYPA 官網｜線上聯絡表單">
       <input type="text"   name="_gotcha" style="display:none">
       <input type="hidden" name="_language" value="contact.htm">
@@ -532,6 +623,9 @@ src="contact.files/image001.gif" alt=聯絡我們 v:shapes="_x0000_s1025"><![end
   });
 })();
 </script>
+
+<!-- element.js 放在 body 尾端，確保穩定初始化 -->
+<script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
 </body>
 </html>
