@@ -124,8 +124,6 @@ body{ background:#ffffff; }
   .center-frame{ width: calc(100% - 24px); padding: 18px 10px 22px 10px; }
 }
 
-
-
 /* --- Added: section alignment + reduce excessive vertical gaps --- */
 .section-wrap{
   width: 500px;
@@ -137,39 +135,135 @@ body{ background:#ffffff; }
 .gap-sm{ margin: 8px 0; }
 </style>
 
+<!-- =========================
+     ✅ Google 翻譯：與 main.htm 同步（繼承語言）
+     ========================= -->
 <script>
-/*
-  --- Translation sync (Google Website Translator) ---
-  Many sites using Google Translate rely on the "googtrans" cookie.
-  This script reads an existing googtrans cookie OR localStorage value
-  and re-applies it so that language selection stays consistent across pages.
-*/
-(function(){
-  function getCookie(name){
-    var m = document.cookie.match(new RegExp('(?:^|; )' + name.replace(/([.$?*|{}()\\[\\]\\\\\\/\\+^])/g,'\\\\$1') + '=([^;]*)'));
-    return m ? decodeURIComponent(m[1]) : '';
-  }
-  function setCookie(name, value, days){
-    var expires = '';
-    if(days){
-      var d = new Date();
-      d.setTime(d.getTime() + days*24*60*60*1000);
-      expires = '; expires=' + d.toUTCString();
-    }
-    // path=/ is important for cross-page inheritance
-    document.cookie = name + '=' + encodeURIComponent(value) + expires + '; path=/';
+  /* ===== Google 翻譯同步設定（main → 子頁）===== */
+  const SITE_FROM_LANG = "zh-TW"; // 主站內容是繁中，統一以 zh-TW 為 source
+  const SITE_LANG_KEY  = "site_lang";
+  const SITE_LANG_LIST = "en,ja,ko,zh-CN,fr,de,es,vi,th,id,ar,fa,tr,zh-TW";
+
+  function setGoogTransCookie(fromLang, toLang) {
+    const v = "/" + fromLang + "/" + toLang;
+    document.cookie = "googtrans=" + v + ";path=/";
+    document.cookie = "googtrans=" + v + ";path=/;SameSite=Lax";
   }
 
-  try{
-    // priority: cookie -> localStorage backup
-    var g = getCookie('googtrans') || localStorage.getItem('googtrans') || '';
-    if(g){
-      setCookie('googtrans', g, 365);
-      localStorage.setItem('googtrans', g);
-    }
-  }catch(e){}
-})();
+  function clearGoogTransCookie() {
+    document.cookie = "googtrans=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
+    document.cookie = "googtrans=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/;SameSite=Lax";
+  }
+
+  function getCookie(name){
+    const m = document.cookie.match(new RegExp("(^|;\\s*)" + name + "=([^;]*)"));
+    return m ? decodeURIComponent(m[2]) : "";
+  }
+
+  function getLangFromGoogtransCookie(){
+    const gt = getCookie("googtrans"); // e.g. /zh-TW/ja
+    const m = gt.match(/^\/([^\/]+)\/([^\/]+)$/);
+    if(!m) return null;
+    return { from: m[1], to: m[2] };
+  }
+
+  // 語言來源：localStorage 優先，沒有就用 googtrans cookie
+  function getSavedLangSafe() {
+    const v = localStorage.getItem(SITE_LANG_KEY);
+    if (v && v !== "null" && v !== "undefined") return v;
+
+    const gt = getLangFromGoogtransCookie();
+    if (gt && gt.to) return gt.to;
+
+    return "original";
+  }
+
+  // 判斷目前頁面是否已被 Google Translate 套用
+  function isTranslatedNow(){
+    const de = document.documentElement;
+    return !!(
+      de.classList.contains("translated-ltr") ||
+      de.classList.contains("translated-rtl") ||
+      document.querySelector("iframe.goog-te-banner-frame") ||
+      document.querySelector(".goog-te-spinner-pos")
+    );
+  }
+
+  // 等待 goog-te-combo 出現後，指定語言並觸發 change
+  function forceApplyLangByCombo(){
+    const target = getSavedLangSafe();
+    if (target === "original") return;
+
+    let tries = 0;
+    const maxTries = 50; // 10 秒
+    const timer = setInterval(function(){
+      tries++;
+
+      const combo = document.querySelector("select.goog-te-combo");
+      if (combo) {
+        combo.value = target;
+        combo.dispatchEvent(new Event("change"));
+        clearInterval(timer);
+        return;
+      }
+
+      if (tries >= maxTries) clearInterval(timer);
+    }, 200);
+  }
+
+  // 進頁先把 cookie 套好（讓 element.js 初始化時讀得到）
+  (function autoApplySavedLang(){
+    const lang = getSavedLangSafe();
+    if (lang === "original") clearGoogTransCookie();
+    else setGoogTransCookie(SITE_FROM_LANG, lang); // 統一改回 /zh-TW/xx
+  })();
+
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement({
+      pageLanguage: SITE_FROM_LANG,
+      includedLanguages: SITE_LANG_LIST,
+      autoDisplay: false
+    }, 'google_translate_element');
+
+    // 初始化後立刻強制套用一次（確保第一次載入就翻）
+    forceApplyLangByCombo();
+  }
+
+  // 正常載入時保險再跑一次
+  window.addEventListener("load", function(){
+    const lang = getSavedLangSafe();
+    if (lang === "original") clearGoogTransCookie();
+    else setGoogTransCookie(SITE_FROM_LANG, lang);
+
+    forceApplyLangByCombo();
+  });
+
+  // 返回上一頁（bfcache restore）時：onload 不會跑，所以一定要用 pageshow
+  // 若 combo 套用後仍未翻譯 => 只 reload 一次（避免循環）
+  window.addEventListener("pageshow", function(evt){
+    const lang = getSavedLangSafe();
+    if (lang === "original") return;
+
+    // 先嘗試直接套用
+    setGoogTransCookie(SITE_FROM_LANG, lang);
+    forceApplyLangByCombo();
+
+    // 再檢查：若沒翻譯，做一次性 reload 修復 bfcache 還原不完整
+    setTimeout(function(){
+      if (isTranslatedNow()) return;
+
+      const key = "gt_bfcache_reload_once_contact";
+      if (sessionStorage.getItem(key) === "1") {
+        return;
+      }
+      sessionStorage.setItem(key, "1");
+      location.reload();
+    }, 700);
+  });
 </script>
+<!-- =========================
+     Google 翻譯同步段落結束
+     ========================= -->
 
 <script>
 /*
@@ -178,15 +272,7 @@ body{ background:#ffffff; }
   目的：
   - 使用者按「寄出」後，不離開本頁 contact.htm
   - 表單資料用 fetch 背景送到 Formspree
-  - 成功/失敗用 alert 提示（不新增任何版面元素，畫面不變）
-
-  ================================
-  本次唯一改動點（依你的要求）：
-  1) 提供兩種寄出模式（只改這部分，其他保留）
-     - 固定格式完整：Email 內文永遠用同一格式，且每個欄位都會出現（即使空白也會顯示）
-     - 主旨跟著留言主題變動：Email Subject 會用使用者填的「留言主題（subt）」去動態改 _subject
-  2) 由 MAIL_MODE 一行切換模式（不改 UI、不改表單、不改版面）
-  ================================
+  - 成功/失敗用提示（本版已改為 DOM 提示，可翻譯）
 */
 (function(){
   var form = document.getElementById('contactForm');
@@ -194,7 +280,7 @@ body{ background:#ffffff; }
 
   // ===== 你只需要改這一行 =====
   // 'FIXED_FULL'：固定格式完整（內文完整、每欄必出現）
-  // 'SUBJECT_DYNAMIC'：主旨跟著留言主題變動（同時也會套用固定格式完整的內文，避免欄位被省略）
+  // 'SUBJECT_DYNAMIC'：主旨跟著留言主題變動
   var MAIL_MODE = 'FIXED_FULL';
   // ===========================
 
@@ -211,20 +297,18 @@ body{ background:#ffffff; }
   form.addEventListener('submit', function(e){
     e.preventDefault(); // 阻止瀏覽器依 action 跳轉到 formspree.io/thanks
 
-    // 1) 先把所有欄位取出（依你頁面現況：留言主題欄位 name="subt"）
+    // 1) 先把所有欄位取出（留言主題欄位 name="subt"）
     var company = getVal('company_name');
     var person  = getVal('person_name');
     var gender  = getChecked('R1');         // 先生 / 女士
     var phone   = getVal('phone');
     var fax     = getVal('fax');
-    var replyto = getVal('_replyto');       // 你的表單 email 欄位是 name="_replyto"
+    var replyto = getVal('_replyto');       // email 欄位 name="_replyto"
     var way     = getVal('contact_way');    // Email聯絡/傳真聯絡/電話聯絡
-    var subj    = getVal('subt');           // 你的表單「留言主題」是 name="subt"
+    var subj    = getVal('subt');           // 留言主題 name="subt"
     var content = getVal('content');
 
-    // 2) 組成「固定格式完整」的內文（每一欄都必定出現，即使空白）
-    //    這一招的核心：我們把完整格式塞到一個欄位（message），Formspree 寄出時就不會漏欄位。
-    //    你在信箱裡看到的會是一封格式固定的內容，不再只是 key/value 零散列表。
+    // 2) 組成固定格式完整內文（每一欄必出現）
     var lines = [
       '【JOEYPA 官網｜線上聯絡表單】',
       '----------------------------------------',
@@ -244,15 +328,13 @@ body{ background:#ffffff; }
     ];
     var fixedMessage = lines.join('\n');
 
-    // 3) 準備送出（保留你原本的 FormData + fetch 架構）
+    // 3) 準備送出
     var formData = new FormData(form);
 
     // 3-1) 強制塞入固定格式完整的內文欄位
-    //      name 用 message 是 Formspree 常見欄位名，你也可改成 "內容" 之類，但 message 最通用。
     formData.set('message', fixedMessage);
 
-    // 3-2) 若選擇「主旨跟著留言主題變動」，則動態覆蓋 _subject
-    //      你原本 HTML 裡有 hidden _subject=固定字串；這裡在送出前覆蓋它，不動 HTML 其他部分
+    // 3-2) 主旨動態模式
     if(MAIL_MODE === 'SUBJECT_DYNAMIC'){
       var dynamicSubject = 'JOEYPA 官網｜線上聯絡表單';
       if(subj){
@@ -260,7 +342,6 @@ body{ background:#ffffff; }
       }
       formData.set('_subject', dynamicSubject);
     }
-    // 反之 FIXED_FULL：不覆蓋 _subject，維持你原本 hidden 設定（主旨固定）
 
     // 4) 送到 Formspree
     fetch(form.action, {
@@ -270,7 +351,7 @@ body{ background:#ffffff; }
     })
     .then(function(res){
       if(res.ok){
-        // ✅ 成功提示：改用頁面 DOM 文字顯示（可被 Google 翻譯）
+        // ✅ 成功提示：醒目底色 + 10秒自動隱藏（可翻譯）
         var msg = document.getElementById('submitMsg');
         if (msg) {
           if (window.__submitMsgTimer) { clearTimeout(window.__submitMsgTimer); }
@@ -284,7 +365,8 @@ body{ background:#ffffff; }
         // 觸發一次語言下拉 change，讓動態顯示文字更容易被即時翻譯
         var combo = document.querySelector('select.goog-te-combo');
         if (combo) combo.dispatchEvent(new Event('change'));
-        HTMLFormElement.prototype.reset.call(form); // 清空欄位（避免 name=reset 覆蓋 form.reset 方法）
+
+        HTMLFormElement.prototype.reset.call(form);
       }else{
         return res.json().then(function(data){
           throw new Error(data && data.error ? data.error : 'Formspree 回應錯誤');
@@ -294,7 +376,7 @@ body{ background:#ffffff; }
       }
     })
     .catch(function(err){
-      // ✅ 失敗提示：改用頁面 DOM 文字顯示（可被 Google 翻譯）
+      // ✅ 失敗提示：醒目底色 + 10秒自動隱藏（可翻譯）
       var msg = document.getElementById('submitMsg');
       if (msg) {
         if (window.__submitMsgTimer) { clearTimeout(window.__submitMsgTimer); }
@@ -313,10 +395,13 @@ body{ background:#ffffff; }
 })();
 </script>
 
-
 </head>
 
 <body bgproperties="fixed">
+
+<!-- ✅ Google 翻譯容器：不可 display:none -->
+<div id="google_translate_element"
+     style="position:absolute; left:-9999px; top:0; width:1px; height:1px; overflow:hidden;"></div>
 
 <a class="home-float" href="main.htm" title="回首頁"><span class="dot"></span>回主頁</a>
 
@@ -326,276 +411,4 @@ body{ background:#ffffff; }
 <p align="center" style="margin-top: 0; margin-bottom: 0">　</p>
 
 <p align="center" style="margin-top: 0; margin-bottom: 0"><!--[if gte vml 1]><v:shapetype id="_x0000_t136"
- coordsize="21600,21600" o:spt="136" adj="10800" path="m@7,l@8,m@5,21600l@6,21600e">
- <v:formulas>
-  <v:f eqn="sum #0 0 10800"/>
-  <v:f eqn="prod #0 2 1"/>
-  <v:f eqn="sum 21600 0 @1"/>
-  <v:f eqn="sum 0 0 @2"/>
-  <v:f eqn="sum 21600 0 @3"/>
-  <v:f eqn="if @0 @3 0"/>
-  <v:f eqn="if @0 21600 @1"/>
-  <v:f eqn="if @0 0 @2"/>
-  <v:f eqn="if @0 @4 21600"/>
-  <v:f eqn="mid @5 @6"/>
-  <v:f eqn="mid @8 @5"/>
-  <v:f eqn="mid @7 @8"/>
-  <v:f eqn="mid @6 @7"/>
-  <v:f eqn="sum @6 0 @5"/>
- </v:formulas>
- <v:path textpathok="t" o:connecttype="custom" o:connectlocs="@9,0;@10,10800;@11,21600;@12,10800"
-  o:connectangles="270,180,90,0"/>
- <v:textpath on="t" fitshape="t"/>
- <v:handles>
-  <v:h position="#0,bottomRight" xrange="6629,14971"/>
- </v:handles>
- <o:lock v:ext="edit" text="t" shapetype="t"/>
-</v:shapetype><v:shape id="_x0000_s1025" type="#_x0000_t136" alt="聯絡我們"
- style='width:2in;height:36pt' fillcolor="red" stroked="f">
- <v:fill color2="#fc0" focus="50%" type="gradient"/>
- <v:shadow on="t" color="#4d4d4d" opacity="52429f" offset=",3pt"/>
- <v:textpath style='font-family:"標楷體";v-text-spacing:78650f;v-text-reverse:t;
-  v-text-kern:t' trim="t" fitpath="t" string="聯絡我們"/>
-</v:shape><![endif]--><![if !vml]><img border=0 width=244 height=65
-src="contact.files/image001.gif" alt=聯絡我們 v:shapes="_x0000_s1025"><![endif]></p>
-<div align="center">
-  <center>
-  <table border="0" cellpadding="0" style="border-collapse: collapse" bordercolor="#111111" width="460" id="AutoNumber1">
-    <tr>
-      <td width="96%">
-      <p style="word-spacing: 10; margin-top: 0; margin-bottom: 0" align="center">　</p>
-      <p style="word-spacing: 10; margin-top: 0; margin-bottom: 0" align="center">
-      <font size="5" color="#6699ff">
-      <marquee width="500" scrolldelay="80" scrollamount="2">歡迎您的聯絡！請在 <線上表單> 內填入您的資料和想連絡的事項，我們將很快的與您聯絡，感謝您！</marquee></font></p><br>
-
-      <!-- Form submit now opens local email client with formatted body -->
-      <form id="contactForm" method="POST" action="https://formspree.io/f/mlgngpyd" accept-charset="utf-8">
-      <!-- ================== Formspree settings (hidden, no UI change) ==================
-           1) _subject  : email subject shown in your inbox
-           2) _gotcha   : honeypot field to reduce spam bots (humans won't fill)
-           3) _language : optional note (for your own sorting) - kept hidden
-      ================================================================================ -->
-      <input type="hidden" name="_subject" value="JOEYPA 官網｜線上聯絡表單">
-      <input type="text"   name="_gotcha" style="display:none">
-      <input type="hidden" name="_language" value="contact.htm">
-
-		<div align="center"><div class="section-wrap">
-<p align="left"><font color="#FF0000">線上表單</font></p>
-		<table border="0" width="360" cellpadding="2" id="table1">
-			<tr>
-				<td align="right" width="137">公司寶號︰</td>
-				<td width="209">
-				<input type="text" name="company_name" size="20" maxlength="48"></td>
-			</tr>
-			<tr>
-				<td align="right" width="137">聯絡人姓名︰</td>
-				<td width="209">
-				<input type="text" name="person_name" size="20" maxlength="20"></td>
-			</tr>
-			<tr>
-				<td align="right" width="137">　</td>
-				<td width="209">
-				<p align="center"> 
-        <input type="radio" value="先生" checked name="R1">先生  
-        <input type="radio" name="R1" value="女士">女士</td>
-			</tr>
-			<tr>
-				<td align="right" width="137">聯絡電話︰</td>
-				<td width="209">
-				<input type="text" name="phone" size="20" maxlength="18"></td>
-			</tr>
-			<tr>
-				<td align="right" width="137">傳真電話︰</td>
-				<td width="209">
-				<input type="text" name="fax" size="20" maxlength="18"></td>
-			</tr>
-			<tr>
-				<td align="right" width="137">電子信箱︰</td>
-				<td width="209"><input type="email" name="_replyto" size="20"></td>
-			</tr>
-			<tr>
-				<td align="right" width="137">聯絡方式︰</td>
-				<td width="209">以&nbsp; <select size="1" name="contact_way">
-        <option selected>Email聯絡</option>
-        <option>傳真聯絡</option>
-        <option>電話聯絡</option>
-        </select> 優先</td>
-			</tr>
-			<tr>
-				<td align="right" width="137">留言主題︰</td>
-				<td width="209">
-				<input type="text" name="subt" size="20" maxlength="100"></td>
-			</tr>
-			<tr>
-				<td align="right" width="137">　</td>
-				<td width="209">　</td>
-			</tr>
-		</div>
-
-</table>
-        </div>
-        <div align="center">
-          <center>
-          <table border="0" cellpadding="0" style="border-collapse: collapse" bordercolor="#111111" width="500" id="AutoNumber2" height="63">
-            <tr>
-              <td width="100%" align="left">
-                <p style="line-height: 150%; margin-left: 0; margin-right: 0; margin-top: 1; margin-bottom: 1"><font color="#6699FF">
-              請您在下方框內寫出您想要聯絡的事項，我們將盡快與您聯絡。謝謝！</font></p>
-              </td>
-            </tr>
-          </table>
-          </center>
-        </div>
-        <p align="center">
-		<textarea rows="10" name="content" cols="60" style="font-size:16px; line-height:1.4;"></textarea></p>
-		<div align="center">
-			<table border="0" width="415" id="table4">
-				<tr>
-					<td>
-					<p align="center"><span style="background-color: #6699FF">
-					<font size="2" color="#FFFFFF">
-					當您按完"寄出 (Submit)"請留意是否有寄件成功的回饋</font></span></td>
-				</tr>
-			</table>
-		</div>
-<p align="center">
-        <input type="submit" value="寄出 (Submit)" name="btn_submit">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-        <input type="reset" value="重寫 (Reset)" name="btn_reset"></p>
-        <!-- ✅ 可翻譯的送出結果提示區（取代 alert；Google 翻譯可翻譯 DOM 文字） -->
-<div id="submitMsg"
-     style="display:none; margin:10px auto; width:500px; max-width:100%;
-            padding:10px 12px; border:1px solid #6699FF; border-radius:8px;
-            background-color:#FFF9E6; color:#333333;
-            box-shadow: 0 6px 16px rgba(0,0,0,0.08);
-            font-family:'Microsoft JhengHei','標楷體','PMingLiU',serif;
-            line-height:1.5;">
-  <!-- 預設文字（成功/失敗會由 JS 覆蓋） -->
-  表單送出結果會顯示在這裡。
-</div>
-<br><br><br><br><br>
-      </form>
-
-
-<div class="section-wrap">
-<p style="word-spacing: 10; margin-top: 0; margin-bottom: 0" align="left">
-		<font color="#FF0000">電話聯絡</font></p>
-<p class="gap-sm"></p>
-		<table border="0" width="500" id="table2" cellpadding="2">
-			<tr>
-				<td colspan="2" bgcolor="#FF9900">
-				<p align="center"><font color="#FFFFFF">JOEYPA 茂果科技</font></td>
-			</tr>
-			<tr>
-				<td width="35%" align="center">電話(台中)︰</td>
-				<td width="67%" align="center">
-				<p align="left">886-4-23833141 (代表號)</td>
-			</tr>
-			<tr>
-				<td width="35%" align="center">電話(雲林)︰</td>
-				<td width="67%" align="center">
-				<p align="left">886-5-5519355 (代表號)</td>
-			</tr>
-			
-			</tr>
-			
-			</table>
-		<p style="word-spacing: 10; margin-top: 0; margin-bottom: 0" align="left">
-		<font color="#FF0000">電子信箱</font></p>
-<p class="gap-sm"></p>
-		<table border="0" width="360" id="table3" cellpadding="2">
-			<tr>
-				<td width="540" align="right" bgcolor="#FF9900">
-				<p align="center"><font color="#FFFFFF">JOEYPA 茂果科技信箱</font></td>
-				<td width="60" align="right" bgcolor="#FFFFCC">
-				<p align="center">
-				<a href="mailto:csanta@ms68.hinet.net?subject=Contact JOEYPA from Homepage" onclick="(function(){var msg=document.getElementById('submitMsg');if(msg){if(window.__submitMsgTimer){clearTimeout(window.__submitMsgTimer);}msg.innerHTML='提醒：此按鈕會嘗試開啟您電腦或手機上的郵件程式（如 Outlook、Gmail App）。<br><br>若您尚未設定郵件程式，可能不會有任何反應，這並非網站故障。<br><br>若無法開啟郵件程式，請改用下方「線上表單」，可確保訊息成功送達。';msg.style.backgroundColor='#CFE2FF';msg.style.borderColor='#0D6EFD';msg.style.color='#052C65';msg.style.display='block';var combo=document.querySelector('select.goog-te-combo');if(combo) combo.dispatchEvent(new Event('change'));window.__submitMsgTimer=setTimeout(function(){msg.style.display='none';},10000);}})();">
-				<img border="0" src="mail.gif" width="23" height="18"></a></td>
-			</tr>
-		</table>
-</div>
-
-      </td>
-    </tr>
-    
-  </table>
-  </center>
-</div>
-
-    </div>
-  </div>
-</div>
-
-
-
-<script>
-/*
-  ================================
-  Formspree AJAX Submit (不跳頁)
-  目的：
-  - 使用者按「寄出」後，不離開本頁 contact.htm
-  - 表單資料用 fetch 背景送到 Formspree
-  - 成功/失敗用 alert 提示（不新增任何版面元素，畫面不變）
-  ================================
-*/
-(function(){
-  var form = document.getElementById('contactForm');
-  if(!form) return;
-
-  form.addEventListener('submit', function(e){
-    e.preventDefault(); // 阻止瀏覽器依 action 跳轉到 formspree.io/thanks
-
-    var formData = new FormData(form);
-
-    fetch(form.action, {
-      method: 'POST',
-      body: formData,
-      headers: { 'Accept': 'application/json' }
-    })
-    .then(function(res){
-      if(res.ok){
-        // ✅ 成功提示：改用頁面 DOM 文字顯示（可被 Google 翻譯）
-        var msg = document.getElementById('submitMsg');
-        if (msg) {
-          if (window.__submitMsgTimer) { clearTimeout(window.__submitMsgTimer); }
-          msg.innerHTML = '表單已成功送出，我們會盡快與您聯絡，謝謝！';
-          msg.style.backgroundColor = '#D1E7DD';
-          msg.style.borderColor = '#198754';
-          msg.style.color = '#0F5132';
-          msg.style.display = 'block';
-          window.__submitMsgTimer = setTimeout(function(){ msg.style.display = 'none'; }, 10000);
-        }
-        // 觸發一次語言下拉 change，讓動態顯示文字更容易被即時翻譯
-        var combo = document.querySelector('select.goog-te-combo');
-        if (combo) combo.dispatchEvent(new Event('change'));
-        HTMLFormElement.prototype.reset.call(form); // 清空欄位（避免 name=reset 覆蓋 form.reset 方法）
-      }else{
-        // 盡量解析錯誤訊息（若 Formspree 回 JSON）
-        return res.json().then(function(data){
-          throw new Error(data && data.error ? data.error : 'Formspree 回應錯誤');
-        }).catch(function(){
-          throw new Error('Formspree 回應錯誤');
-        });
-      }
-    })
-    .catch(function(err){
-      // ✅ 失敗提示：改用頁面 DOM 文字顯示（可被 Google 翻譯）
-      var msg = document.getElementById('submitMsg');
-      if (msg) {
-        if (window.__submitMsgTimer) { clearTimeout(window.__submitMsgTimer); }
-        msg.innerHTML = '送出失敗：' + (err && err.message ? err.message : '請稍後再試') +
-                        '<br><br>若仍無法送出，請改用上方 Email 按鈕或直接寄信。';
-        msg.style.backgroundColor = '#F8D7DA';
-        msg.style.borderColor = '#DC3545';
-        msg.style.color = '#842029';
-        msg.style.display = 'block';
-        window.__submitMsgTimer = setTimeout(function(){ msg.style.display = 'none'; }, 10000);
-      }
-      var combo = document.querySelector('select.goog-te-combo');
-      if (combo) combo.dispatchEvent(new Event('change'));
-    });
-  });
-})();
-</script>
-
-</body>
-</html>
+ coordsize=
