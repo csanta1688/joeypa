@@ -47,6 +47,63 @@
     overflow: hidden;
     text-overflow: ellipsis;
   }
+
+  /* ====== 公告五行跑馬燈（專業無縫版）====== */
+  .notice-marquee{
+    width: 650px;               /* 保持原本版面寬度 */
+    display: inline-block;
+    text-align: left;
+    margin: 0 auto;
+  }
+
+  .notice-line{
+    position: relative;
+    overflow: hidden;
+    height: 28px;
+    line-height: 28px;
+    margin: 14px 0;
+    border-radius: 4px;
+    padding: 0 8px;            /* 左右留邊 */
+    box-sizing: border-box;
+    font-size: 18px;   /* ← 在這裡改字體大小 */
+  }
+
+  /* 跑馬燈軌道（JS 會自動複製內容） */
+  .marquee-track{
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+    will-change: transform;
+    animation-name: noticeMarquee;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    animation-duration: var(--dur, 32s);  /* 每行獨立速度 */
+  }
+
+  /* 內容本體：這裡控制間隔空白（越小越緊） */
+  .marquee-item{
+    display: inline-block;
+    white-space: nowrap;
+    padding-right: 100px;        /* ✅空白更少：你可改 6px/8px */
+  }
+
+  /* 無縫關鍵：跑到 -50% */
+  @keyframes noticeMarquee{
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* 滑鼠移上去暫停 */
+  .notice-line:hover .marquee-track{
+    animation-play-state: paused;
+  }
+
+  /* 五行指定色：底色 + 字色 */
+  .line1{ background:#FFD400; color:#D00000; font-weight:700; }  /* 黃底紅字 */
+  .line2{ background:#D00000; color:#0033CC; font-weight:700; }  /* 紅底藍字 */
+  .line3{ background:#0033CC; color:#F3E6D0; font-weight:700; }  /* 藍底米白字 */
+  .line4{ background:#F3E6D0; color:#0A7A2A; font-weight:700; }  /* 米白底綠字 */
+  .line5{ background:#0A7A2A; color:#FFD400; font-weight:700; }  /* 綠底黃字 */
   </style>
 
   <script>
@@ -72,13 +129,12 @@
     }
 
     function getLangFromGoogtransCookie(){
-      const gt = getCookie("googtrans"); // e.g. /zh-CN/ja 或 /zh-TW/ja
+      const gt = getCookie("googtrans"); // e.g. /zh-TW/ja
       const m = gt.match(/^\/([^\/]+)\/([^\/]+)$/);
       if(!m) return null;
       return { from: m[1], to: m[2] };
     }
 
-    // 語言來源：localStorage 優先，沒有就用 googtrans cookie（你目前很可能是這個狀態）
     function getSavedLangSafe() {
       const v = localStorage.getItem(SITE_LANG_KEY);
       if (v && v !== "null" && v !== "undefined") return v;
@@ -89,7 +145,6 @@
       return "original";
     }
 
-    // 判斷目前頁面是否已被 Google Translate 套用（很關鍵）
     function isTranslatedNow(){
       const de = document.documentElement;
       return !!(
@@ -100,7 +155,6 @@
       );
     }
 
-    // 一招：等待 goog-te-combo 出現後，指定語言並觸發 change（比單靠 cookie 穩）
     function forceApplyLangByCombo(){
       const target = getSavedLangSafe();
       if (target === "original") return;
@@ -126,7 +180,7 @@
     (function autoApplySavedLang(){
       const lang = getSavedLangSafe();
       if (lang === "original") clearGoogTransCookie();
-      else setGoogTransCookie(SITE_FROM_LANG, lang); // 統一改回 /zh-TW/xx
+      else setGoogTransCookie(SITE_FROM_LANG, lang);
     })();
 
     function googleTranslateElementInit() {
@@ -136,11 +190,9 @@
         autoDisplay: false
       }, 'google_translate_element');
 
-      // 初始化後立刻強制套用一次（確保第一次載入就翻）
       forceApplyLangByCombo();
     }
 
-    // 正常載入時保險再跑一次
     window.addEventListener("load", function(){
       const lang = getSavedLangSafe();
       if (lang === "original") clearGoogTransCookie();
@@ -149,30 +201,24 @@
       forceApplyLangByCombo();
     });
 
-    // 返回上一頁（bfcache restore）時：onload 不會跑，所以一定要用 pageshow
-    // 若 combo 套用後仍未翻譯 => 只 reload 一次（防止你遇到的「回來是原文」）
     window.addEventListener("pageshow", function(evt){
       const lang = getSavedLangSafe();
       if (lang === "original") return;
 
-      // 先嘗試直接套用
       setGoogTransCookie(SITE_FROM_LANG, lang);
       forceApplyLangByCombo();
 
-      // 再檢查：若沒翻譯，做一次性 reload 修復 bfcache 還原不完整
       setTimeout(function(){
         if (isTranslatedNow()) return;
 
         const key = "gt_bfcache_reload_once_main";
-        if (sessionStorage.getItem(key) === "1") {
-          // 已重整過一次，就不再重整，避免循環
-          return;
-        }
+        if (sessionStorage.getItem(key) === "1") return;
         sessionStorage.setItem(key, "1");
         location.reload();
       }, 700);
     });
   </script>
+
   <link rel="stylesheet" href="site_style.css">
   <script src="site_ui.js" defer></script>
 </head>
@@ -228,13 +274,49 @@
 
 <tr><td height="20">　</td></tr>
 
+<!-- ================= 公告區（五行跑馬燈） ================= -->
 <tr>
 <td align="center">
-<strong>【公告】</strong><br><br>本公司充電器等常態產品(接單設計、訂製類產品、新制品除外)目前在台灣的零售、售後、維修等業務委由「大豆賣場」處理，<br>
-若有相關業務或服務需求請直接聯絡「大豆賣場」陳先生 0921742281，謝謝！<br><br><br>
------------------------------------------------------------------------------------------------
+  
+  <strong style="font-size:28px;">【公  告】</strong><br>
+
+  <div class="notice-marquee">
+    <div class="notice-line line1" style="--dur: 32s;">
+      <div class="marquee-track">
+        <span class="marquee-item">&nbsp;</span>
+      </div>
+    </div>
+
+    <div class="notice-line line2" style="--dur: 34s;">
+      <div class="marquee-track">
+        <span class="marquee-item">&nbsp;</span>
+      </div>
+    </div>
+
+    <div class="notice-line line3" style="--dur: 36s;">
+      <div class="marquee-track">
+        <span class="marquee-item">&nbsp;</span>
+      </div>
+    </div>
+
+    <div class="notice-line line4" style="--dur: 34s;">
+      <div class="marquee-track">
+        <span class="marquee-item">&nbsp;</span>
+
+      </div>
+    </div>
+
+    <div class="notice-line line5" style="--dur: 32s;">
+      <div class="marquee-track">
+        <span class="marquee-item"> =★★★★★=  本公司充電器等常態產品（接單設計、訂製類產品、新制品除外）目前在台灣的零售、售後、維修等業務委由「大豆賣場」處理。若有相關業務或服務需求請直接聯絡「大豆賣場」陳先生 0921742281，謝謝！</span>
+      </div>
+    </div>
+  </div>
+
+  
 </td>
 </tr>
+<!-- ========================================================= -->
 
 <tr><td height="40">　</td></tr>
 
@@ -277,6 +359,7 @@
 
 <tr><td height="30">　</td></tr>
 
+<!-- ================= 日期 + 公司名稱（保留原本） ================= -->
 <tr>
 <td align="center">
 <script>
@@ -292,15 +375,117 @@
 </script><br><br>
 茂果科技有限公司<br>
 JOEYPA (TAIWAN) TECHNOLOGY CORP. <br>
-
 </td>
 </tr>
+<!-- ============================================================= -->
 
 </table>
 </div>
 
 <!-- element.js 放在 body 尾端，確保穩定初始化 -->
 <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+<!-- 跑馬燈：安全無縫自動複製 + 每行不同速度 + hover 暫停 + 手機加速 -->
+<script>
+(function(){
+
+  // 手機/觸控設備加速倍率（越小越快）
+  const TOUCH_SPEED_FACTOR = 0.75;
+
+  function isTouchDevice(){
+    return ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+  }
+
+  function prepareMarqueeLine(line){
+    try{
+      const track = line.querySelector('.marquee-track');
+      if(!track) return;
+
+      const firstItem = track.querySelector('.marquee-item');
+      if(!firstItem) return;
+
+      const text = firstItem.textContent.trim();
+      if(!text) return;
+
+      // 避免重複初始化（翻譯或重整時）
+      if(track.dataset.ready === "1") return;
+
+      // 建立基底
+      track.innerHTML = "";
+      const base = document.createElement('span');
+      base.className = 'marquee-item';
+      base.textContent = text;
+      track.appendChild(base);
+
+      // 讓內容至少覆蓋到容器 2 倍寬，空白最少、循環更密
+      const containerWidth = line.clientWidth || 650;
+      let baseW = base.offsetWidth;
+
+      // 若首次量不到寬（極少數情況），延後再試，不拋錯
+      if(!baseW || baseW < 10){
+        setTimeout(function(){
+          // 清掉 ready 讓它可再初始化
+          track.dataset.ready = "0";
+          prepareMarqueeLine(line);
+        }, 200);
+        return;
+      }
+
+      let totalWidth = baseW;
+      while(totalWidth < containerWidth * 2){
+        const clone = base.cloneNode(true);
+        track.appendChild(clone);
+        totalWidth += baseW;
+        if(track.children.length > 24) break; // 安全上限
+      }
+
+      // 再複製「整段」一次，讓 -50% 真正無縫
+      const clones = track.cloneNode(true);
+      while(clones.firstChild){
+        track.appendChild(clones.firstChild);
+      }
+
+      track.dataset.ready = "1";
+    }catch(e){
+      // 任何錯誤都不影響後面日期/公司顯示
+      console.warn("Marquee init skipped:", e);
+    }
+  }
+
+  function applyTouchSpeedBoost(){
+    if(!isTouchDevice()) return;
+
+    document.querySelectorAll('.notice-line').forEach(line=>{
+      const dur = getComputedStyle(line).getPropertyValue('--dur').trim();
+      if(!dur.endsWith('s')) return;
+
+      const sec = parseFloat(dur);
+      if(!isFinite(sec) || sec <= 0) return;
+
+      const newSec = Math.max(4, sec * TOUCH_SPEED_FACTOR);
+      line.style.setProperty('--dur', newSec + 's');
+    });
+  }
+
+  function initAll(){
+    document.querySelectorAll('.notice-line').forEach(prepareMarqueeLine);
+    applyTouchSpeedBoost();
+  }
+
+  // 等 DOM 全穩定後再初始化，避免干擾其他 script（含日期）
+  window.addEventListener('load', function(){
+    setTimeout(initAll, 200);
+  });
+
+  // 需要時可手動呼叫（例如你未來用 JS 更新公告文字）
+  window.noticeMarqueeRefresh = function(){
+    // 允許重新初始化
+    document.querySelectorAll('.notice-line .marquee-track').forEach(t=>t.dataset.ready="0");
+    initAll();
+  };
+
+})();
+</script>
 
 </body>
 </html>
