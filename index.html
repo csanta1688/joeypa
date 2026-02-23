@@ -4,9 +4,70 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="shortcut icon" href="JPlogo.ico">
-  <title>茂果科技 JOEYPA TECHNOLOGY CORP.</title>
 
-  <style>
+  <!-- ✅ SEO（衝關鍵字版）：Title 精簡 + 關鍵字靠前（避免被截斷） -->
+  <title>智慧型電瓶充電器・DC-DC 充電器｜副電瓶隔離器｜茂果科技（JOEYPA）</title>
+
+  <!-- ✅ SEO：Description（建議 120~160 中文字內，提升點擊率 CTR） -->
+  <meta name="description" content="電子產品 ODM 代工設計與製造。茂果科技（JOEYPA）主力產品包含智慧型電瓶充電器、DC-DC 充電器、副電瓶隔離器、多功能定時器與遠端控制回報系統，支援車用／家用電源整合與客製化方案。">
+
+  <!-- ✅ SEO：Canonical（避免重複頁/翻譯狀態造成重複 URL） -->
+  <link rel="canonical" href="https://joeypa.com.tw/">
+
+  <!-- ✅ SEO：索引策略 -->
+  <meta name="robots" content="index,follow,max-image-preview:large">
+
+  <!-- ✅ 社群分享（Open Graph / Twitter） -->
+  <meta property="og:locale" content="zh_TW">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="茂果科技 (JOEYPA)">
+  <meta property="og:title" content="智慧型電瓶充電器・DC-DC 充電器｜副電瓶隔離器｜茂果科技（JOEYPA）">
+  <meta property="og:description" content="電子產品 ODM 代工設計與製造。智慧型電瓶充電器、DC-DC 充電器、副電瓶隔離器、多功能定時器與遠端控制回報系統，支援車用/家用整合與客製化方案。">
+  <meta property="og:url" content="https://joeypa.com.tw/">
+  <meta property="og:image" content="https://joeypa.com.tw/serlogo.jpg">
+  <meta property="og:image:alt" content="茂果科技 (JOEYPA) Logo">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="智慧型電瓶充電器・DC-DC 充電器｜副電瓶隔離器｜茂果科技（JOEYPA）">
+  <meta name="twitter:description" content="電子產品 ODM 代工設計與製造。智慧型電瓶充電器、DC-DC 充電器、副電瓶隔離器與各種客製化整合方案。">
+  <meta name="twitter:image" content="https://joeypa.com.tw/serlogo.jpg">
+
+  <!-- ✅ 結構化資料：Organization（提升品牌可信度/站點理解） -->
+  <!-- 注意：telephone/email 請換成你的真實資料；不想公開可刪除 contactPoint -->
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"Organization",
+    "name":"茂果科技 (JOEYPA)",
+    "url":"https://joeypa.com.tw/",
+    "logo":"https://joeypa.com.tw/serlogo.jpg",
+    "address":{
+      "@type":"PostalAddress",
+      "addressCountry":"TW"
+    },
+    "contactPoint":[
+      {
+        "@type":"ContactPoint",
+        "contactType":"sales",
+        "telephone":"+886-4-2383-3141",
+        "email":"csanta@ms68.hinet.net",
+        "availableLanguage":["zh-TW","en","ja"]
+      }
+    ]
+  }
+  </script>
+
+  <!-- ✅ 結構化資料：WebSite（強化站點語意） -->
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"WebSite",
+    "name":"茂果科技 (JOEYPA)",
+    "url":"https://joeypa.com.tw/"
+  }
+  </script>
+
+<style>
     body{
       background: url('starsky.gif') fixed;
       margin: 0;
@@ -47,9 +108,39 @@
       padding: 6px 10px;
       margin: 0 6px;
     }
+
+    /* ✅ SEO：不影響畫面，但讓搜尋引擎讀到 H1/導讀（避免薄內容） */
+    .visually-hidden{
+      position:absolute !important;
+      width:1px !important; height:1px !important;
+      padding:0 !important; margin:-1px !important;
+      overflow:hidden !important;
+      clip:rect(0 0 0 0) !important;
+      white-space:nowrap !important;
+      border:0 !important;
+    }
+    .seo-intro{
+      max-width: 640px;
+      margin: 10px auto 0;
+      padding: 0 6px;
+      font-size: 13px;
+      line-height: 1.7;
+      opacity: .92;
+      text-align: center;
+    }
+    .seo-links{
+      margin-top: 10px;
+      text-align: center;
+      font-size: 12px;
+      opacity: .9;
+    }
+    .seo-links a{
+      color: #ffffff;
+      text-decoration: underline;
+    }
   </style>
 
-<script>
+  <script>
     // ===== 語言選擇：寫入 localStorage.site_lang，交由 translate_bootstrap.js 全站套用 =====
     const SITE_LANG_KEY = "site_lang";
 
@@ -76,16 +167,21 @@
       if (window.__gt_set_lang) window.__gt_set_lang(lang);
       window.location.href = "main.htm";
     }
-</script>
-
+  </script>
 </head>
 
 <body onload="initLangUI()">
+
+  <!-- ✅ SEO：入口頁加 H1/導讀（隱藏不破壞版面） -->
+  <h1 class="visually-hidden">茂果科技 (JOEYPA)｜智慧型電瓶充電器｜副電瓶隔離器｜電子產品代工設計｜DC-DC 充電器｜車用雙電瓶系統｜車宿供電解決方案</h1>
+
   <div class="wrap">
     <div class="panel">
-      <img class="logo" src="serlogo.jpg" alt="JOEYPA">
+      <img class="logo" src="serlogo.jpg" alt="茂果科技 (JOEYPA) LOGO">
+
       <div class="row">
-        <select id="langSelect">
+        <label for="langSelect" class="visually-hidden">選擇語言</label>
+        <select id="langSelect" aria-label="選擇語言">
           <option value="en">English</option>
           <option value="ja">日本語</option>
           <option value="ko">한국어</option>
@@ -102,13 +198,22 @@
           <option value="original">繁體中文</option>
         </select>
 
-        <button onclick="goMain()">ENTER</button>
+        <button onclick="goMain()" aria-label="進入首頁">ENTER</button>
       </div>
 
-      <div class="row" style="margin-top:10px; font-size:13px; opacity:.92; line-height:1.6;">
-        All web pages are automatically translated using Google Translate.<br>
-        The content may not be entirely accurate.<br>
-        Please select your language and press ENTER to enter the homepage.
+
+      <!-- ✅ SEO 補強：多一段「入口頁導讀」（不破壞排版） -->
+      <div class="seo-intro">
+        本公司(茂果科技 (JOEYPA))提供各類電子產品設計與代工製造等ODM相關服務，並銷售自家生產的充電器、副電瓶隔離器、多功能定時器、遠端控制與回報系統等相關產品與解決方案，並包含各類家用、車用相關電器周邊應用整合。為方便國際使用者，網站提供 Google 翻譯，請選擇語言後進入。
+      </div>
+
+      <!-- ✅ 內部連結（可選）：讓爬蟲更容易走到主頁/產品/消息（不影響使用者也可） -->
+      <div class="seo-links">
+        快速連結：
+        <a href="main.htm">首頁</a> |
+        <a href="product.htm">產品</a> |
+        <a href="news.htm">最新消息</a> |
+        <a href="contact.htm">聯絡我們</a>
       </div>
 
       <!-- 隱藏的 Google 翻譯容器（重要：不能 display:none） -->
