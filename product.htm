@@ -4,7 +4,104 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="shortcut icon" href="JPlogo.ico">
-<title>茂果科技產品總覽</title>
+
+<!-- ✅ SEO（參考 index.html） -->
+<title>產品總覽｜電瓶充電器・DC-DC 充電器｜副電瓶隔離器｜茂果科技（JOEYPA）</title>
+<meta name="description" content="茂果科技（JOEYPA）產品總覽：DIY汽機車應用模組、室內/室外型電瓶充電器、DC-DC 充電器、副電瓶隔離器等車用電源整合方案，支援 ODM 客製化與小量接單。">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<link rel="canonical" href="https://joeypa.com.tw/product.htm">
+
+<!-- Open Graph / Twitter -->
+<meta property="og:locale" content="zh_TW">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="茂果科技 (JOEYPA)">
+<meta property="og:title" content="產品總覽｜電瓶充電器・DC-DC 充電器｜副電瓶隔離器｜茂果科技（JOEYPA）">
+<meta property="og:description" content="DIY汽機車模組、電瓶充電器、DC-DC 充電器與副電瓶隔離器產品總覽，支援車用雙電瓶與電源整合應用。">
+<meta property="og:url" content="https://joeypa.com.tw/product.htm">
+<meta property="og:image" content="https://joeypa.com.tw/serlogo.jpg">
+<meta property="og:image:alt" content="茂果科技 (JOEYPA) Logo">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="產品總覽｜電瓶充電器・DC-DC 充電器｜副電瓶隔離器｜茂果科技（JOEYPA）">
+<meta name="twitter:description" content="DIY汽機車模組、電瓶充電器、DC-DC 充電器與副電瓶隔離器產品總覽。">
+<meta name="twitter:image" content="https://joeypa.com.tw/serlogo.jpg">
+
+<!-- 結構化資料：Breadcrumb + 產品(ItemList) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "入口",
+      "item": "https://joeypa.com.tw/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "首頁",
+      "item": "https://joeypa.com.tw/main.htm"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "產品總覽",
+      "item": "https://joeypa.com.tw/product.htm"
+    }
+  ]
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "name": "茂果科技 (JOEYPA) 產品分類",
+  "itemListOrder": "https://schema.org/ItemListOrderAscending",
+  "numberOfItems": 4,
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "item": {
+        "@type": "ProductGroup",
+        "name": "DIY汽機車應用模組",
+        "url": "https://joeypa.com.tw/product_diyadd1.htm"
+      }
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "item": {
+        "@type": "ProductGroup",
+        "name": "電瓶充電器(室內用)",
+        "url": "https://joeypa.com.tw/product_charger.htm"
+      }
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "item": {
+        "@type": "ProductGroup",
+        "name": "電瓶充電器(室外用)",
+        "url": "https://joeypa.com.tw/product_oscharger.htm"
+      }
+    },
+    {
+      "@type": "ListItem",
+      "position": 4,
+      "item": {
+        "@type": "ProductGroup",
+        "name": "電瓶隔離器",
+        "url": "https://joeypa.com.tw/product_isolator.htm"
+      }
+    }
+  ]
+}
+</script>
+
 
 <style>
 :root{
@@ -100,6 +197,25 @@ function googleTranslateElementInit() {
    - 修正 JBC1208M 縮圖切換會把 src 改回相對路徑的問題
    - ★新增：contentArea capture 導頁攔截器（避免點 GO 跳出框架）
    ========================= */
+
+
+  // ✅ SEO：子頁獨立 Title（不改子頁檔案也能生效）
+  // 規則：
+  // 1) 若子頁本身有 <title>，就用它
+  // 2) 若沒有，就用側欄按鈕文字 + 公司名組合
+  const TITLE_SUFFIX = "｜茂果科技（JOEYPA）";
+  function guessTitleFromUrl(pageUrl){
+    const map = {
+      "product_diyadd1.htm": "DIY汽機車應用模組",
+      "product_charger.htm": "電瓶充電器（室內用）",
+      "product_oscharger.htm": "電瓶充電器（室外用）",
+      "product_isolator.htm": "電瓶隔離器"
+    };
+    const fn = (pageUrl.split("/").pop() || "").split("?")[0].split("#")[0];
+    if(map[fn]) return map[fn] + TITLE_SUFFIX;
+    return "產品總覽" + TITLE_SUFFIX;
+  }
+
 
 const DYN_ATTR = "data-dyn-asset";
 
@@ -260,6 +376,14 @@ async function loadIntoContent(url){
   const res = await fetch(pageUrl, {cache:"no-store"});
   const html = await res.text();
   const doc = new DOMParser().parseFromString(html, "text/html");
+
+  // ✅ SEO：依子頁設定獨立 Title
+  try{
+    const t = (doc && doc.title) ? doc.title.trim() : "";
+    document.title = t ? t : guessTitleFromUrl(pageUrl);
+  }catch(e){
+    document.title = guessTitleFromUrl(pageUrl);
+  }
 
   // 1) 注入子頁 head 的 style/link（CSS 才會恢復）
   injectHeadAssets(doc, pageUrl);
