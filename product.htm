@@ -4,7 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="shortcut icon" href="JPlogo.ico">
-
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
 <!-- ✅ SEO（參考 index.html） -->
 <title>產品總覽｜電瓶充電器・DC-DC 充電器｜副電瓶隔離器｜茂果科技（JOEYPA）</title>
 <meta name="description" content="茂果科技（JOEYPA）產品總覽：DIY汽機車應用模組、室內/室外型電瓶充電器、DC-DC 充電器、副電瓶隔離器等車用電源整合方案，支援 ODM 客製化與小量接單。">
@@ -180,8 +181,6 @@ html,body{
 }
 </style>
 
-<!-- Google 翻譯：母頁統一管理，子頁不重複載入 -->
-<div id="google_translate_element" style="display:none"></div>
 <script>
 function googleTranslateElementInit() {
   new google.translate.TranslateElement({pageLanguage:'zh-TW', autoDisplay:false}, 'google_translate_element');
@@ -210,6 +209,7 @@ function googleTranslateElementInit() {
       "product_charger.htm": "電瓶充電器（室內用）",
       "product_oscharger.htm": "電瓶充電器（室外用）",
       "product_isolator.htm": "電瓶隔離器"
+      
     };
     const fn = (pageUrl.split("/").pop() || "").split("?")[0].split("#")[0];
     if(map[fn]) return map[fn] + TITLE_SUFFIX;
@@ -425,21 +425,24 @@ function go(url, btnId){
 }
 
 window.addEventListener("DOMContentLoaded", ()=>{
-  go("product_diyadd1.htm","btn_diyadd1");
+  go("product_charger.htm","btn_charger");
 });
 </script>
 
 </head>
 <body>
+<!-- Google 翻譯：母頁統一管理，子頁不重複載入 -->
+<div id="google_translate_element" style="display:none"></div>
+
 <div id="layout">
   <div id="sidebar">
     <div class="vtitle">產品類型</div>
 
     <button class="btn" id="btn_home" onclick="location.href='main.htm'">回主頁</button>
-    <button class="btn" id="btn_diyadd1" onclick="go('product_diyadd1.htm','btn_diyadd1')">DIY汽機車應用模組</button>
     <button class="btn" id="btn_charger" onclick="go('product_charger.htm','btn_charger')">電瓶充電器(室內用)</button>
     <button class="btn" id="btn_oscharger" onclick="go('product_oscharger.htm','btn_oscharger')">電瓶充電器(室外用)</button>
     <button class="btn" id="btn_isolator" onclick="go('product_isolator.htm','btn_isolator')">電瓶隔離器</button>
+    <button class="btn" id="btn_diyadd1" onclick="go('product_diyadd1.htm','btn_diyadd1')">DIY汽機車應用模組</button>
   </div>
 
   <div id="main">
