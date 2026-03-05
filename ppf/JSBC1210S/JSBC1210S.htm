@@ -6,7 +6,37 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="GENERATOR" content="Microsoft FrontPage 6.0">
 <meta name="ProgId" content="FrontPage.Editor.Document">
-<title>型號 JSBC-1210S</title>
+<title>型號 JSBC-1210S雙智慧型脈衝式電瓶充電器</title>
+
+
+
+<meta name="description" content="茂果科技JSBC-1210S雙智慧型脈衝式電瓶充電器，提供穩定充電與保護機制，適用各類汽機車鉛酸電瓶、鋰鐵電池與深循環電池應用，更具備智慧充電與可長時間無人看守守護電瓶功能。">
+<link rel="canonical" href="https://joeypa.com.tw/ppf/JSBC1210S/JSBC1210S.htm">
+
+<!-- Open Graph / 分享預覽 -->
+<meta property="og:type" content="product">
+<meta property="og:title" content="JSBC-1210S雙智慧型脈衝式電瓶充電器｜茂果科技（JOEYPA）">
+<meta property="og:description" content="茂果科技JSBC-1210S雙智慧型脈衝式電瓶充電器，提供穩定充電與保護機制，適用各類汽機車鉛酸電瓶、鋰鐵電池與深循環電池應用，更具備智慧充電與可長時間無人看守守護電瓶功能。">
+<meta property="og:url" content="https://joeypa.com.tw/ppf/JSBC1210S/JSBC1210S.htm">
+<meta property="og:image" content="https://joeypa.com.tw/ppf/JSBC1210S/p1.jpg">
+
+<!-- Product 結構化資料（JSON-LD） -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": "茂果科技JSBC-1210S雙智慧型脈衝式電瓶充電器",
+  "sku": "JSBC1210S",
+  "brand": { "@type": "Brand", "name": "茂果科技有限公司" },
+  "category": "Battery Charger",
+  "image": [
+    "https://joeypa.com.tw/ppf/JSBC1210S/p1.jpg",
+    "https://joeypa.com.tw/ppf/JSBC1210S/p2.jpg",
+    "https://joeypa.com.tw/ppf/JSBC1210S/p3.jpg"
+  ],
+  "description": "茂果科技JSBC-1210S雙智慧型脈衝式電瓶充電器，提供穩定充電與保護機制，適用各類汽機車鉛酸電瓶、鋰鐵電池與深循環電池應用，更具備智慧充電與可長時間無人看守守護電瓶功能。"
+}
+</script>
 
 <!-- 強制同頁開啟（避免另開視窗/分頁造成翻譯不同步） -->
 <base target="_self">
@@ -190,9 +220,14 @@ body{
   border-radius: var(--radius-frame);
   padding: 12px;
   background: linear-gradient(180deg, rgba(37, 99, 235, .05), rgba(6, 182, 212, .04));
+  display: flex;
+  gap: 12px;
+  align-items: center;
 }
 
 .thumb-strip{
+  flex: 1 1 auto;
+  min-width: 0;
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: 12px;
@@ -372,6 +407,73 @@ body{
   .ap-row .ap-cell{ min-height: 260px; }
 }
 
+
+/* DM 按鍵（放在縮圖列右側） */
+.thumb-actions{
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+.dm-btn{
+  appearance: none;
+  border: 2px solid rgba(220, 38, 38, .85);
+  background: rgba(255, 255, 255, .92);
+  color: rgba(220, 38, 38, 1);
+  font-weight: 800;
+  letter-spacing: .5px;
+  padding: 10px 14px;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: transform .08s ease, box-shadow .12s ease, background .12s ease;
+  box-shadow: 0 6px 14px rgba(0,0,0,.06);
+}
+.dm-btn:hover{ transform: translateY(-1px); }
+.dm-btn:active{ transform: translateY(0); }
+
+/* DM 面板 */
+.dm-panel{
+  margin-top: 14px;
+  border: var(--frame-border);
+  border-radius: var(--radius-frame);
+  padding: 14px;
+  background: linear-gradient(180deg, rgba(37, 99, 235, .04), rgba(6, 182, 212, .03));
+}
+.dm-inner{
+  display: grid;
+  gap: 12px;
+}
+.dm-image{
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 14px;
+  border: 1px solid rgba(15, 23, 42, .10);
+  background: #fff;
+}
+.dm-actions{
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+.dm-action-btn{
+  appearance: none;
+  border: 1px solid rgba(15, 23, 42, .18);
+  background: rgba(255,255,255,.9);
+  padding: 10px 14px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 700;
+}
+.dm-back-btn{
+  border-color: rgba(37, 99, 235, .28);
+}
+
+/* 列印時不顯示 DM 按鈕區 */
+@media print{
+  .dm-actions{ display:none !important; }
+}
+
 </style>
 
 <script>
@@ -516,6 +618,7 @@ window.addEventListener("load", function(){
 <div id="google_translate_element"
      style="position:absolute;left:-9999px;top:0;width:1px;height:1px;overflow:hidden"></div>
 
+<div id="normalPanel">
 <main class="spec-page" aria-label="JSBC-1210S 產品頁面框架">
 
   <!-- 上半部：標題列 + 主圖/規格內容（黑框） -->
@@ -569,31 +672,39 @@ window.addEventListener("load", function(){
   </div>
 </div>
 
-    </div>
-
+   
   </section>
 
   <!-- p1~p6 縮圖列（黑框） -->
   <section class="thumb-row" aria-label="p1 到 p6 縮圖列">
     <div class="thumb-strip" id="thumbStrip">
       <button class="thumb-btn" type="button" data-id="p1" aria-current="true" aria-label="切換到 p1">
-        <img class="thumb-img" src="p1.jpg" width="80" height="60" alt="p1 縮圖 (80x60)">
+        <img class="thumb-img" src="p1.jpg" width="80" height="60" alt="p1 縮圖 (80x60)"
+             alt="茂果科技 JSBC-1210S 雙智慧型脈衝式電瓶充電器（適用鉛酸/鋰鐵）">
       </button>
       <button class="thumb-btn" type="button" data-id="p2" aria-current="false" aria-label="切換到 p2">
-        <img class="thumb-img" src="p2.jpg" width="80" height="60" alt="p2 縮圖 (80x60)">
+        <img class="thumb-img" src="p2.jpg" width="80" height="60" alt="p2 縮圖 (80x60)"
+             alt="茂果科技 JSBC-1210S 雙智慧型脈衝式電瓶充電器（適用鉛酸/鋰鐵）">
       </button>
       <button class="thumb-btn" type="button" data-id="p3" aria-current="false" aria-label="切換到 p3">
-        <img class="thumb-img" src="p3.jpg" width="80" height="60" alt="p3 縮圖 (80x60)">
+        <img class="thumb-img" src="p3.jpg" width="80" height="60" alt="p3 縮圖 (80x60)"
+             alt="茂果科技 JSBC-1210S 雙智慧型脈衝式電瓶充電器（適用鉛酸/鋰鐵）">
       </button>
       <button class="thumb-btn" type="button" data-id="p4" aria-current="false" aria-label="切換到 p4">
-        <img class="thumb-img" src="p4.jpg" width="80" height="60" alt="p4 縮圖 (80x60)">
+        <img class="thumb-img" src="p4.jpg" width="80" height="60" alt="p4 縮圖 (80x60)"
+             alt="茂果科技 JSBC-1210S 雙智慧型脈衝式電瓶充電器（適用鉛酸/鋰鐵）">
       </button>
       <button class="thumb-btn" type="button" data-id="p5" aria-current="false" aria-label="切換到 p5">
-        <img class="thumb-img" src="p5.jpg" width="80" height="60" alt="p5 縮圖 (80x60)">
+        <img class="thumb-img" src="p5.jpg" width="80" height="60" alt="p5 縮圖 (80x60)"
+             alt="茂果科技 JSBC-1210S 雙智慧型脈衝式電瓶充電器（適用鉛酸/鋰鐵）">
       </button>
       <button class="thumb-btn" type="button" data-id="p6" aria-current="false" aria-label="切換到 p6">
-        <img class="thumb-img" src="p6.jpg" width="80" height="60" alt="p6 縮圖 (80x60)">
+        <img class="thumb-img" src="p6.jpg" width="80" height="60" alt="p6 縮圖 (80x60)"
+             alt="茂果科技 JSBC-1210S 雙智慧型脈衝式電瓶充電器（適用鉛酸/鋰鐵）">
       </button>
+    </div>
+    <div class="thumb-actions" aria-label="DM">
+      <button id="dmBtn" class="dm-btn" type="button" aria-label="開啟 DM">DM</button>
     </div>
   </section>
 
@@ -603,7 +714,7 @@ window.addEventListener("load", function(){
     <!-- AP1 -->
     <div class="ap-row" aria-label="AP1">
       <div class="ap-cell left" aria-label="AP1 圖片">
-        <img class="ap-image" src="AP1.jpg" width="320" height="240" alt="AP1 圖 (320x240)">
+        <img class="ap-image" src="AP1.jpg" width="320" height="240" alt="茂果科技 JSBC-1210S 雙智慧型脈衝式電瓶充電器（適用鉛酸/鋰鐵）">
       </div>
       <div class="ap-cell" aria-label="AP1 說明文字">
         <div class="ap-text">
@@ -621,7 +732,7 @@ window.addEventListener("load", function(){
     <!-- AP2 -->
     <div class="ap-row" aria-label="AP1">
       <div class="ap-cell left" aria-label="AP2 圖片">
-        <img class="ap-image" src="AP2.gif" width="320" height="240" alt="AP2 圖 (320x240)">
+        <img class="ap-image" src="AP2.gif" width="320" height="240" alt="茂果科技 JSBC-1210S 雙智慧型脈衝式電瓶充電器（適用鉛酸/鋰鐵）">
       </div>
       <div class="ap-cell" aria-label="AP2 說明文字">
         <div class="ap-text">
@@ -636,7 +747,7 @@ window.addEventListener("load", function(){
     <!-- AP3 -->
     <div class="ap-row" aria-label="AP3">
       <div class="ap-cell left" aria-label="AP3 圖片">
-        <img class="ap-image" src="AP3.jpg" width="320" height="240" alt="AP3 圖 (320x240)">
+        <img class="ap-image" src="AP3.jpg" width="320" height="240" alt="茂果科技 JSBC-1210S 雙智慧型脈衝式電瓶充電器（適用鉛酸/鋰鐵）">
       </div>
       <div class="ap-cell" aria-label="AP3 說明文字">
         <div class="ap-text">
@@ -651,7 +762,7 @@ window.addEventListener("load", function(){
     <!-- AP4 -->
     <div class="ap-row" aria-label="AP4">
       <div class="ap-cell left" aria-label="AP4 圖片">
-        <img class="ap-image" src="AP4.jpg" width="320" height="240" alt="AP4 圖 (320x240)">
+        <img class="ap-image" src="AP4.jpg" width="320" height="240" alt="茂果科技 JSBC-1210S 雙智慧型脈衝式電瓶充電器（適用鉛酸/鋰鐵）">
       </div>
       <div class="ap-cell" aria-label="AP4 說明文字">
         <div class="ap-text">
@@ -666,6 +777,20 @@ window.addEventListener("load", function(){
   </section>
 
 </main>
+</div>
+
+<!-- DM 面板（由 DM 按鍵切換顯示） -->
+<section id="dmPanel" class="dm-panel" hidden aria-label="JSBC-1210S DM 頁面">
+  <div class="dm-inner">
+    <img class="dm-image" src="JSBC-1210S雙智慧型充電器DM - 1.jpg" alt="JSBC-1210S 雙智慧型充電器 DM">
+    <div class="dm-actions" aria-label="DM 操作按鍵">
+      <button id="dmPrintBtn" type="button" class="dm-action-btn">列印</button>
+      <button id="dmBackBtn" type="button" class="dm-action-btn dm-back-btn">返回 JSBC1210S</button>
+    </div>
+  </div>
+</section>
+
+
 
 <script>
 /* =========================
@@ -700,6 +825,37 @@ window.addEventListener("load", function(){
 </script>
 
 <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+
+<script>
+/* =========================
+   DM：切換顯示 DM 圖 + 列印/返回
+   ========================= */
+(function initDM(){
+  const dmBtn = document.getElementById('dmBtn');
+  const dmPanel = document.getElementById('dmPanel');
+  const normalPanel = document.getElementById('normalPanel');
+  const printBtn = document.getElementById('dmPrintBtn');
+  const backBtn = document.getElementById('dmBackBtn');
+
+  if(!dmBtn || !dmPanel || !normalPanel || !printBtn || !backBtn) return;
+
+  function showDM(){
+    normalPanel.hidden = true;
+    dmPanel.hidden = false;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  function hideDM(){
+    dmPanel.hidden = true;
+    normalPanel.hidden = false;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  dmBtn.addEventListener('click', showDM);
+  backBtn.addEventListener('click', hideDM);
+  printBtn.addEventListener('click', () => window.print());
+})();
+</script>
 
 </body>
 </html>
