@@ -463,14 +463,15 @@ body{
 .dm-btn:active{ transform: translateY(0); }
 
 .dm-panel{
-  width: min(1100px, calc(100vw - 24px));
-  margin: 0 auto;
-  margin-top: 14px;
+  width: 100%;
+  max-width: var(--max-width);
+  margin: 14px auto 0;
   border: var(--frame-border);
   border-radius: var(--radius-frame);
   padding: 14px;
   background: linear-gradient(180deg, rgba(37, 99, 235, .04), rgba(6, 182, 212, .03));
   box-shadow: var(--shadow-card);
+  overflow: hidden;
 }
 .dm-inner{
   display: grid;
@@ -485,6 +486,7 @@ body{
   border: 1px solid rgba(15, 23, 42, .10);
   background: #fff;
   margin: 0 auto;
+  object-fit: contain;
 }
 .dm-actions{
   display: flex;
