@@ -37,32 +37,63 @@
 <script>
 /* =========================
    DM 顯示/返回/列印控制
+   - 修正：被 product.htm 動態載入時，DOMContentLoaded 不會再觸發
+   - 修正：避免重複綁定
+   - 修正：在框架內點擊時停止事件冒泡
    ========================= */
-window.addEventListener('DOMContentLoaded', function initDM(){
-  const dmBtn = document.getElementById('dmBtn');
-  const dmPanel = document.getElementById('dmPanel');
-  const normalPanel = document.getElementById('normalPanel');
-  const printBtn = document.getElementById('dmPrintBtn');
-  const backBtn = document.getElementById('dmBackBtn');
+(function(){
+  function initDM(){
+    const dmBtn = document.getElementById('dmBtn');
+    const dmPanel = document.getElementById('dmPanel');
+    const normalPanel = document.getElementById('normalPanel');
+    const printBtn = document.getElementById('dmPrintBtn');
+    const backBtn = document.getElementById('dmBackBtn');
 
-  if(!dmBtn || !dmPanel || !normalPanel || !printBtn || !backBtn) return;
+    if(!dmBtn || !dmPanel || !normalPanel || !printBtn || !backBtn) return;
+    if(dmBtn.dataset.dmBound === '1') return;
+    dmBtn.dataset.dmBound = '1';
+    backBtn.dataset.dmBound = '1';
+    printBtn.dataset.dmBound = '1';
 
-  function showDM(){
-    normalPanel.hidden = true;
-    dmPanel.hidden = false;
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    function showDM(e){
+      if(e){
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      normalPanel.hidden = true;
+      dmPanel.hidden = false;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function hideDM(e){
+      if(e){
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      dmPanel.hidden = true;
+      normalPanel.hidden = false;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function printDM(e){
+      if(e){
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      window.print();
+    }
+
+    dmBtn.addEventListener('click', showDM);
+    backBtn.addEventListener('click', hideDM);
+    printBtn.addEventListener('click', printDM);
   }
-  function hideDM(){
-    dmPanel.hidden = true;
-    normalPanel.hidden = false;
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', initDM, { once: true });
+  }else{
+    initDM();
   }
-
-  dmBtn.addEventListener('click', showDM);
-  backBtn.addEventListener('click', hideDM);
-  printBtn.addEventListener('click', function(){ window.print(); });
-});
-
+})();
 </script>
 
 <!-- 強制同頁開啟（避免另開視窗/分頁造成翻譯不同步） -->
