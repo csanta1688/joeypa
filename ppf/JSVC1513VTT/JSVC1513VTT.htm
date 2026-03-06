@@ -6,7 +6,95 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="GENERATOR" content="Microsoft FrontPage 6.0">
 <meta name="ProgId" content="FrontPage.Editor.Document">
-<title>型號 JSVC-1513VTT</title>
+<title>型號 JSVC-1513VTT｜車載多功能電瓶充電器｜茂果科技有限公司</title>
+<meta name="description" content="茂果科技 JSVC-1513VTT 車載多功能電瓶充電器，支援 12V 鉛酸與鋰鐵電池，具強力充電模式、低壓保護模式、電壓表顯示與高效率散熱風扇。">
+<link rel="canonical" href="https://joeypa.com.tw/ppf/JSVC1513VTT/JSVC1513VTT.htm">
+<meta property="og:type" content="product">
+<meta property="og:title" content="JSVC-1513VTT 車載多功能電瓶充電器｜茂果科技有限公司">
+<meta property="og:description" content="車載多功能電瓶充電器，支援 12V 鉛酸與鋰鐵電池，具強力充電模式、低壓保護模式、電壓表顯示與高效率散熱風扇。">
+<meta property="og:url" content="https://joeypa.com.tw/ppf/JSVC1513VTT/JSVC1513VTT.htm">
+<meta property="og:image" content="https://joeypa.com.tw/ppf/JSVC1513VTT/p1.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": "JSVC-1513VTT 車載多功能電瓶充電器",
+  "sku": "JSVC-1513VTT",
+  "brand": {
+    "@type": "Brand",
+    "name": "茂果科技有限公司"
+  },
+  "category": "Car Battery Charger",
+  "image": [
+    "https://joeypa.com.tw/ppf/JSVC1513VTT/p1.jpg",
+    "https://joeypa.com.tw/ppf/JSVC1513VTT/p2.jpg"
+  ],
+  "description": "支援 12V 鉛酸與鋰鐵電池的車載多功能電瓶充電器，具強力充電模式、低壓保護模式、電壓表顯示與高效率散熱風扇。"
+}
+</script>
+
+<script>
+/* =========================
+   DM 顯示/返回/列印控制
+   - 修正：被 product.htm 動態載入時，DOMContentLoaded 不會再觸發
+   - 修正：避免重複綁定
+   - 修正：在框架內點擊時停止事件冒泡
+   ========================= */
+(function(){
+  function initDM(){
+    const dmBtn = document.getElementById('dmBtn');
+    const dmPanel = document.getElementById('dmPanel');
+    const normalPanel = document.getElementById('normalPanel');
+    const printBtn = document.getElementById('dmPrintBtn');
+    const backBtn = document.getElementById('dmBackBtn');
+
+    if(!dmBtn || !dmPanel || !normalPanel || !printBtn || !backBtn) return;
+    if(dmBtn.dataset.dmBound === '1') return;
+    dmBtn.dataset.dmBound = '1';
+    backBtn.dataset.dmBound = '1';
+    printBtn.dataset.dmBound = '1';
+
+    function showDM(e){
+      if(e){
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      normalPanel.hidden = true;
+      dmPanel.hidden = false;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function hideDM(e){
+      if(e){
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      dmPanel.hidden = true;
+      normalPanel.hidden = false;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function printDM(e){
+      if(e){
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      window.print();
+    }
+
+    dmBtn.addEventListener('click', showDM);
+    backBtn.addEventListener('click', hideDM);
+    printBtn.addEventListener('click', printDM);
+  }
+
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', initDM, { once: true });
+  }else{
+    initDM();
+  }
+})();
+</script>
 
 <!-- 強制同頁開啟（避免另開視窗/分頁造成翻譯不同步） -->
 <base target="_self">
@@ -338,6 +426,123 @@ body{
 
 
 
+/* ===== 縮圖列 + DM 按鈕 ===== */
+.thumb-row-inner{
+  display: flex;
+  gap: 14px;
+  align-items: stretch;
+}
+
+.thumb-row-inner .thumb-strip{
+  flex: 1;
+}
+
+.thumb-actions{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 92px;
+}
+
+.dm-btn{
+  appearance: none;
+  border: 2px solid #ef4444;
+  background: #fff;
+  color: #dc2626;
+  border-radius: 18px;
+  padding: 14px 18px;
+  min-width: 74px;
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, .08);
+  transition: transform .08s ease, box-shadow .12s ease, background .12s ease;
+}
+
+.dm-btn:hover{
+  transform: translateY(-1px);
+  box-shadow: 0 12px 22px rgba(239, 68, 68, .18);
+  background: #fff7f7;
+}
+
+/* ===== DM 面板 ===== */
+.dm-panel{
+  width: 100%;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  background: var(--card-bg);
+  box-shadow: var(--shadow-card);
+  border-radius: var(--radius-card);
+  padding: 14px;
+  overflow: hidden;
+}
+
+.dm-inner{
+  width: 100%;
+  border-radius: var(--radius-frame);
+  background: #fff;
+}
+
+.dm-image{
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius-frame);
+}
+
+.dm-actions{
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 16px 4px 0;
+  flex-wrap: wrap;
+}
+
+.dm-action-btn{
+  appearance: none;
+  border: 1px solid rgba(15, 23, 42, .18);
+  background: #ffffff;
+  color: #111827;
+  border-radius: 18px;
+  padding: 12px 18px;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 6px 14px rgba(15, 23, 42, .08);
+}
+
+.dm-back-btn{
+  min-width: 180px;
+}
+
+@media print{
+  #google_translate_element,
+  .thumb-row,
+  .dm-actions{
+    display: none !important;
+  }
+
+  body{
+    background: #fff;
+    padding: 0;
+  }
+
+  .dm-panel{
+    max-width: none;
+    width: 100%;
+    box-shadow: none;
+    border-radius: 0;
+    padding: 0;
+  }
+
+  .dm-inner,
+  .dm-image{
+    border-radius: 0;
+  }
+}
+
 
 /* ===== RWD：手機更好讀 ===== */
 @media (max-width: 920px){
@@ -356,6 +561,8 @@ body{
   .top-grid .cell{ border-right: none; }
   .top-grid .cell.main{ border-bottom: var(--frame-border); }
 
+  .thumb-row-inner{ flex-direction: column; align-items: stretch; }
+  .thumb-actions{ min-width: 0; justify-content: flex-end; }
   .thumb-strip{ grid-template-columns: repeat(3, minmax(0, 1fr)); }
 
   .ap-row{ grid-template-columns: 1fr; }
@@ -367,6 +574,8 @@ body{
 
 @media (max-width: 420px){
   .thumb-strip{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .dm-action-btn,
+  .dm-back-btn{ width: 100%; }
   .top-grid .cell.main,
   .top-grid .cell.spec{ min-height: 280px; }
   .ap-row .ap-cell{ min-height: 260px; }
@@ -516,6 +725,7 @@ window.addEventListener("load", function(){
 <div id="google_translate_element"
      style="position:absolute;left:-9999px;top:0;width:1px;height:1px;overflow:hidden"></div>
 
+<div id="normalPanel">
 <main class="spec-page" aria-label="JSVC-1513VTT 產品頁面框架">
 
   <!-- 上半部：標題列 + 主圖/規格內容（黑框） -->
@@ -559,31 +769,35 @@ window.addEventListener("load", function(){
   </div>
 </div>
 
-    </div>
 
   </section>
 
   <!-- p1~p6 縮圖列（黑框） -->
   <section class="thumb-row" aria-label="p1 到 p6 縮圖列">
-    <div class="thumb-strip" id="thumbStrip">
-      <button class="thumb-btn" type="button" data-id="p1" aria-current="true" aria-label="切換到 p1">
-        <img class="thumb-img" src="p1.jpg" width="80" height="60" alt="p1 縮圖 (80x60)">
-      </button>
-      <button class="thumb-btn" type="button" data-id="p2" aria-current="false" aria-label="切換到 p2">
-        <img class="thumb-img" src="p2.jpg" width="80" height="60" alt="p2 縮圖 (80x60)">
-      </button>
-      <button class="thumb-btn" type="button" data-id="p3" aria-current="false" aria-label="切換到 p3">
-        <img class="thumb-img" src="p3.jpg" width="80" height="60" alt="p3 縮圖 (80x60)">
-      </button>
-      <button class="thumb-btn" type="button" data-id="p4" aria-current="false" aria-label="切換到 p4">
-        <img class="thumb-img" src="p4.jpg" width="80" height="60" alt="p4 縮圖 (80x60)">
-      </button>
-      <button class="thumb-btn" type="button" data-id="p5" aria-current="false" aria-label="切換到 p5">
-        <img class="thumb-img" src="p5.jpg" width="80" height="60" alt="p5 縮圖 (80x60)">
-      </button>
-      <button class="thumb-btn" type="button" data-id="p6" aria-current="false" aria-label="切換到 p6">
-        <img class="thumb-img" src="p6.jpg" width="80" height="60" alt="p6 縮圖 (80x60)">
-      </button>
+    <div class="thumb-row-inner">
+      <div class="thumb-strip" id="thumbStrip">
+        <button class="thumb-btn" type="button" data-id="p1" aria-current="true" aria-label="切換到 p1">
+          <img class="thumb-img" src="p1.jpg" width="80" height="60" alt="p1 縮圖 (80x60)">
+        </button>
+        <button class="thumb-btn" type="button" data-id="p2" aria-current="false" aria-label="切換到 p2">
+          <img class="thumb-img" src="p2.jpg" width="80" height="60" alt="p2 縮圖 (80x60)">
+        </button>
+        <button class="thumb-btn" type="button" data-id="p3" aria-current="false" aria-label="切換到 p3">
+          <img class="thumb-img" src="p3.jpg" width="80" height="60" alt="p3 縮圖 (80x60)">
+        </button>
+        <button class="thumb-btn" type="button" data-id="p4" aria-current="false" aria-label="切換到 p4">
+          <img class="thumb-img" src="p4.jpg" width="80" height="60" alt="p4 縮圖 (80x60)">
+        </button>
+        <button class="thumb-btn" type="button" data-id="p5" aria-current="false" aria-label="切換到 p5">
+          <img class="thumb-img" src="p5.jpg" width="80" height="60" alt="p5 縮圖 (80x60)">
+        </button>
+        <button class="thumb-btn" type="button" data-id="p6" aria-current="false" aria-label="切換到 p6">
+          <img class="thumb-img" src="p6.jpg" width="80" height="60" alt="p6 縮圖 (80x60)">
+        </button>
+      </div>
+      <div class="thumb-actions">
+        <button id="dmBtn" class="dm-btn" type="button" aria-label="顯示 JSVC-1513VTT DM">DM</button>
+      </div>
     </div>
   </section>
 
@@ -644,6 +858,17 @@ window.addEventListener("load", function(){
   </section>
 
 </main>
+</div>
+
+<section id="dmPanel" class="dm-panel" hidden>
+  <div class="dm-inner">
+    <img class="dm-image" src="JSVC1513系列DM.jpg" alt="JSVC-1513VTT 產品 DM">
+    <div class="dm-actions">
+      <button id="dmPrintBtn" class="dm-action-btn" type="button">列印</button>
+      <button id="dmBackBtn" class="dm-action-btn dm-back-btn" type="button">返回 JSVC1513VTT</button>
+    </div>
+  </div>
+</section>
 
 <script>
 /* =========================
