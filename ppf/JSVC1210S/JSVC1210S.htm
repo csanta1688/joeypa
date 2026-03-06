@@ -6,7 +6,95 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="GENERATOR" content="Microsoft FrontPage 6.0">
 <meta name="ProgId" content="FrontPage.Editor.Document">
-<title>型號 JSVC-1210S</title>
+<title>型號 JSVC-1210S｜戶外停車專用智慧型充電器｜茂果科技有限公司</title>
+<meta name="description" content="茂果科技 JSVC-1210S 戶外停車專用智慧型充電器，適合少開車、路邊停車、戶外停車與長時間備援充電使用，支援 12V 鉛酸與鋰鐵電池。">
+<link rel="canonical" href="https://joeypa.com.tw/ppf/JSVC1210S/JSVC1210S.htm">
+<meta property="og:type" content="product">
+<meta property="og:title" content="JSVC-1210S 戶外停車專用智慧型充電器｜茂果科技有限公司">
+<meta property="og:description" content="戶外停車專用智慧型充電器，適合少開車、戶外停車與長時間備援充電，支援 12V 鉛酸與鋰鐵電池。">
+<meta property="og:url" content="https://joeypa.com.tw/ppf/JSVC1210S/JSVC1210S.htm">
+<meta property="og:image" content="https://joeypa.com.tw/ppf/JSVC1210S/p1.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": "JSVC-1210S 戶外停車專用智慧型充電器",
+  "sku": "JSVC-1210S",
+  "brand": {
+    "@type": "Brand",
+    "name": "茂果科技有限公司"
+  },
+  "category": "Car Battery Charger",
+  "image": [
+    "https://joeypa.com.tw/ppf/JSVC1210S/p1.jpg",
+    "https://joeypa.com.tw/ppf/JSVC1210S/p2.jpg"
+  ],
+  "description": "支援 12V 鉛酸與鋰鐵電池的戶外停車專用智慧型充電器，適合少開車、戶外停車與長時間備援充電。"
+}
+</script>
+
+<script>
+/* =========================
+   DM 顯示/返回/列印控制
+   - 修正：被 product.htm 動態載入時，DOMContentLoaded 不會再觸發
+   - 修正：避免重複綁定
+   - 修正：在框架內點擊時停止事件冒泡
+   ========================= */
+(function(){
+  function initDM(){
+    const dmBtn = document.getElementById('dmBtn');
+    const dmPanel = document.getElementById('dmPanel');
+    const normalPanel = document.getElementById('normalPanel');
+    const printBtn = document.getElementById('dmPrintBtn');
+    const backBtn = document.getElementById('dmBackBtn');
+
+    if(!dmBtn || !dmPanel || !normalPanel || !printBtn || !backBtn) return;
+    if(dmBtn.dataset.dmBound === '1') return;
+    dmBtn.dataset.dmBound = '1';
+    backBtn.dataset.dmBound = '1';
+    printBtn.dataset.dmBound = '1';
+
+    function showDM(e){
+      if(e){
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      normalPanel.hidden = true;
+      dmPanel.hidden = false;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function hideDM(e){
+      if(e){
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      dmPanel.hidden = true;
+      normalPanel.hidden = false;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function printDM(e){
+      if(e){
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      window.print();
+    }
+
+    dmBtn.addEventListener('click', showDM);
+    backBtn.addEventListener('click', hideDM);
+    printBtn.addEventListener('click', printDM);
+  }
+
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', initDM, { once: true });
+  }else{
+    initDM();
+  }
+})();
+</script>
 
 <!-- 強制同頁開啟（避免另開視窗/分頁造成翻譯不同步） -->
 <base target="_self">
@@ -232,6 +320,123 @@ body{
   background: #fff;
 }
 
+
+
+.thumb-row-inner{
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+}
+.thumb-strip{
+  flex: 1 1 auto;
+}
+.thumb-actions{
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+.dm-btn{
+  appearance: none;
+  border: 2px solid rgba(220, 38, 38, .85);
+  background: rgba(255, 255, 255, .92);
+  color: rgba(220, 38, 38, 1);
+  font-weight: 800;
+  letter-spacing: .5px;
+  padding: 10px 14px;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: transform .08s ease, box-shadow .12s ease, background .12s ease;
+  box-shadow: 0 6px 14px rgba(0,0,0,.06);
+}
+.dm-btn:hover{ transform: translateY(-1px); }
+.dm-btn:active{ transform: translateY(0); }
+
+.dm-panel{
+  width: 100%;
+  max-width: var(--max-width);
+  margin: 14px auto 0;
+  border: var(--frame-border);
+  border-radius: var(--radius-frame);
+  padding: 14px;
+  background: linear-gradient(180deg, rgba(37, 99, 235, .04), rgba(6, 182, 212, .03));
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+}
+.dm-inner{
+  display: grid;
+  gap: 12px;
+}
+.dm-image{
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 14px;
+  border: 1px solid rgba(15, 23, 42, .10);
+  background: #fff;
+  margin: 0 auto;
+  object-fit: contain;
+}
+.dm-actions{
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  align-items: center;
+}
+.dm-action-btn{
+  appearance: none;
+  border: 1px solid rgba(15, 23, 42, .18);
+  background: rgba(255,255,255,.9);
+  padding: 10px 14px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 700;
+}
+.dm-back-btn{
+  border-color: rgba(37, 99, 235, .28);
+}
+
+@media (max-width: 760px){
+  .thumb-row-inner{
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .thumb-actions{
+    justify-content: flex-end;
+  }
+  .dm-actions{
+    flex-wrap: wrap;
+  }
+}
+
+@media print{
+  body{
+    background: #fff;
+    padding: 0;
+  }
+  #normalPanel,
+  .dm-actions,
+  #google_translate_element{
+    display: none !important;
+  }
+  #dmPanel{
+    display: block !important;
+    border: 0;
+    box-shadow: none;
+    padding: 0;
+    margin: 0;
+    max-width: none;
+    width: 100%;
+  }
+  .dm-image{
+    border: 0;
+    border-radius: 0;
+    width: 100%;
+    max-width: 100%;
+  }
+}
 
 /* 規格內容整體 */
 .spec-text{
@@ -516,6 +721,7 @@ window.addEventListener("load", function(){
 <div id="google_translate_element"
      style="position:absolute;left:-9999px;top:0;width:1px;height:1px;overflow:hidden"></div>
 
+<div id="normalPanel">
 <main class="spec-page" aria-label="JSVC-1210S 產品頁面框架">
 
   <!-- 上半部：標題列 + 主圖/規格內容（黑框） -->
@@ -559,13 +765,13 @@ window.addEventListener("load", function(){
   </div>
 </div>
 
-    </div>
 
   </section>
 
   <!-- p1~p6 縮圖列（黑框） -->
   <section class="thumb-row" aria-label="p1 到 p6 縮圖列">
-    <div class="thumb-strip" id="thumbStrip">
+    <div class="thumb-row-inner">
+      <div class="thumb-strip" id="thumbStrip">
       <button class="thumb-btn" type="button" data-id="p1" aria-current="true" aria-label="切換到 p1">
         <img class="thumb-img" src="p1.jpg" width="80" height="60" alt="p1 縮圖 (80x60)">
       </button>
@@ -584,6 +790,10 @@ window.addEventListener("load", function(){
       <button class="thumb-btn" type="button" data-id="p6" aria-current="false" aria-label="切換到 p6">
         <img class="thumb-img" src="p6.jpg" width="80" height="60" alt="p6 縮圖 (80x60)">
       </button>
+      </div>
+      <div class="thumb-actions" aria-label="縮圖列操作區">
+        <button id="dmBtn" type="button" class="dm-btn" aria-label="顯示 JSVC-1210S DM">DM</button>
+      </div>
     </div>
   </section>
 
@@ -699,6 +909,18 @@ window.addEventListener("load", function(){
   </section>
 
 </main>
+</div>
+
+
+<section id="dmPanel" class="dm-panel" hidden aria-label="JSVC-1210S DM 頁面">
+  <div class="dm-inner">
+    <img class="dm-image" src="JSVC-1210S戶外停車專用智慧型充電器DM.jpg" alt="JSVC-1210S 戶外停車專用智慧型充電器 DM">
+    <div class="dm-actions" aria-label="DM 操作按鍵">
+      <button id="dmPrintBtn" type="button" class="dm-action-btn">列印</button>
+      <button id="dmBackBtn" type="button" class="dm-action-btn dm-back-btn">返回 JSVC1210S</button>
+    </div>
+  </div>
+</section>
 
 <script>
 /* =========================
