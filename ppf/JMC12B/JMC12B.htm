@@ -6,7 +6,95 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="GENERATOR" content="Microsoft FrontPage 6.0">
 <meta name="ProgId" content="FrontPage.Editor.Document">
-<title>型號 JMC-12B</title>
+<title>型號 JMC-12B｜機車專用室內外電瓶充電器｜茂果科技有限公司</title>
+<meta name="description" content="茂果科技 JMC-12B 機車專用室內外電瓶充電器，適用 12V 鉛酸、鋰鐵與鈦酸鋰電池，支援室內外充電與模組化 DIY 擴充。">
+<link rel="canonical" href="https://joeypa.com.tw/ppf/JMC12B/JMC12B.htm">
+<meta property="og:type" content="product">
+<meta property="og:title" content="JMC-12B 機車專用室內外電瓶充電器｜茂果科技有限公司">
+<meta property="og:description" content="茂果科技 JMC-12B 機車專用室內外電瓶充電器，適用 12V 鉛酸、鋰鐵與鈦酸鋰電池，支援室內外充電與模組化 DIY 擴充。">
+<meta property="og:url" content="https://joeypa.com.tw/ppf/JMC12B/JMC12B.htm">
+<meta property="og:image" content="https://joeypa.com.tw/ppf/JMC12B/p1.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": "JMC-12B 機車專用室內外電瓶充電器",
+  "sku": "JMC-12B",
+  "brand": {
+    "@type": "Brand",
+    "name": "茂果科技有限公司"
+  },
+  "category": "Motorcycle Battery Charger",
+  "image": [
+    "https://joeypa.com.tw/ppf/JMC12B/p1.jpg",
+    "https://joeypa.com.tw/ppf/JMC12B/p2.jpg"
+  ],
+  "description": "茂果科技 JMC-12B 機車專用室內外電瓶充電器，適用 12V 鉛酸、鋰鐵與鈦酸鋰電池，支援室內外充電與模組化 DIY 擴充。"
+}
+</script>
+
+<script>
+/* =========================
+   DM 顯示/返回/列印控制
+   - 修正：被 product.htm 動態載入時，DOMContentLoaded 不會再觸發
+   - 修正：避免重複綁定
+   - 修正：在框架內點擊時停止事件冒泡
+   ========================= */
+(function(){
+  function initDM(){
+    const dmBtn = document.getElementById('dmBtn');
+    const dmPanel = document.getElementById('dmPanel');
+    const normalPanel = document.getElementById('normalPanel');
+    const printBtn = document.getElementById('dmPrintBtn');
+    const backBtn = document.getElementById('dmBackBtn');
+
+    if(!dmBtn || !dmPanel || !normalPanel || !printBtn || !backBtn) return;
+    if(dmBtn.dataset.dmBound === '1') return;
+    dmBtn.dataset.dmBound = '1';
+    backBtn.dataset.dmBound = '1';
+    printBtn.dataset.dmBound = '1';
+
+    function showDM(e){
+      if(e){
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      normalPanel.hidden = true;
+      dmPanel.hidden = false;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function hideDM(e){
+      if(e){
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      dmPanel.hidden = true;
+      normalPanel.hidden = false;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function printDM(e){
+      if(e){
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      window.print();
+    }
+
+    dmBtn.addEventListener('click', showDM);
+    backBtn.addEventListener('click', hideDM);
+    printBtn.addEventListener('click', printDM);
+  }
+
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', initDM, { once: true });
+  }else{
+    initDM();
+  }
+})();
+</script>
 
 <!-- 強制同頁開啟（避免另開視窗/分頁造成翻譯不同步） -->
 <base target="_self">
@@ -339,6 +427,118 @@ body{
 
 
 
+
+/* ===== 縮圖列 + DM 操作 ===== */
+.thumb-row-inner{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.thumb-actions{
+  flex:0 0 auto;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.dm-btn{
+  appearance:none;
+  border:2px solid rgba(220, 38, 38, .75);
+  background:#fff;
+  color:#dc2626;
+  font-weight:800;
+  font-size:18px;
+  line-height:1;
+  padding:14px 16px;
+  min-width:72px;
+  border-radius:18px;
+  cursor:pointer;
+  transition:transform .08s ease, box-shadow .12s ease, background .12s ease;
+}
+.dm-btn:hover{
+  transform:translateY(-1px);
+  box-shadow:var(--shadow-soft);
+  background:#fff7f7;
+}
+
+.dm-panel{
+  width:100%;
+  max-width:var(--max-width);
+  margin:0 auto;
+  background:var(--card-bg);
+  box-shadow:var(--shadow-card);
+  border-radius:var(--radius-card);
+  padding:14px;
+  overflow:hidden;
+}
+
+.dm-inner{
+  width:100%;
+  border-radius:var(--radius-frame);
+  background:#fff;
+}
+
+.dm-image{
+  width:100%;
+  height:auto;
+  display:block;
+  object-fit:contain;
+  border-radius:12px;
+}
+
+.dm-actions{
+  display:flex;
+  justify-content:flex-end;
+  gap:12px;
+  padding:16px 0 0;
+}
+
+.dm-action-btn{
+  appearance:none;
+  border:1px solid rgba(15,23,42,.18);
+  background:#fff;
+  color:#111827;
+  font-weight:700;
+  font-size:16px;
+  padding:14px 18px;
+  border-radius:18px;
+  cursor:pointer;
+}
+
+.dm-back-btn{
+  min-width:160px;
+}
+
+@media print{
+  body{
+    background:#fff !important;
+    padding:0 !important;
+  }
+  #normalPanel,
+  .dm-actions,
+  #google_translate_element{
+    display:none !important;
+  }
+  #dmPanel{
+    display:block !important;
+    width:100% !important;
+    max-width:none !important;
+    margin:0 !important;
+    box-shadow:none !important;
+    padding:0 !important;
+    background:#fff !important;
+  }
+  .dm-inner{
+    border-radius:0 !important;
+  }
+  .dm-image{
+    width:100% !important;
+    max-width:100% !important;
+    border-radius:0 !important;
+  }
+}
+
 /* ===== RWD：手機更好讀 ===== */
 @media (max-width: 920px){
   :root{ --max-width: 760px; }
@@ -356,7 +556,9 @@ body{
   .top-grid .cell{ border-right: none; }
   .top-grid .cell.main{ border-bottom: var(--frame-border); }
 
+  .thumb-row-inner{ flex-direction:column; align-items:stretch; }
   .thumb-strip{ grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .thumb-actions{ justify-content:flex-end; }
 
   .ap-row{ grid-template-columns: 1fr; }
   .ap-row .ap-cell.left{
@@ -367,6 +569,7 @@ body{
 
 @media (max-width: 420px){
   .thumb-strip{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .dm-btn{ width:100%; }
   .top-grid .cell.main,
   .top-grid .cell.spec{ min-height: 280px; }
   .ap-row .ap-cell{ min-height: 260px; }
@@ -516,6 +719,7 @@ window.addEventListener("load", function(){
 <div id="google_translate_element"
      style="position:absolute;left:-9999px;top:0;width:1px;height:1px;overflow:hidden"></div>
 
+<div id="normalPanel">
 <main class="spec-page" aria-label="JMC-12B 產品頁面框架">
 
   <!-- 上半部：標題列 + 主圖/規格內容（黑框） -->
@@ -565,7 +769,8 @@ window.addEventListener("load", function(){
 
   <!-- p1~p6 縮圖列（黑框） -->
   <section class="thumb-row" aria-label="p1 到 p6 縮圖列">
-    <div class="thumb-strip" id="thumbStrip">
+    <div class="thumb-row-inner">
+      <div class="thumb-strip" id="thumbStrip">
       <button class="thumb-btn" type="button" data-id="p1" aria-current="true" aria-label="切換到 p1">
         <img class="thumb-img" src="p1.jpg" width="80" height="60" alt="p1 縮圖 (80x60)">
       </button>
@@ -584,6 +789,10 @@ window.addEventListener("load", function(){
       <button class="thumb-btn" type="button" data-id="p6" aria-current="false" aria-label="切換到 p6">
         <img class="thumb-img" src="p6.jpg" width="80" height="60" alt="p6 縮圖 (80x60)">
       </button>
+    </div>
+      <div class="thumb-actions">
+        <button id="dmBtn" class="dm-btn" type="button" aria-label="顯示 JMC-12B DM">DM</button>
+      </div>
     </div>
   </section>
 
@@ -640,6 +849,17 @@ window.addEventListener("load", function(){
   </section>
 
 </main>
+</div>
+
+<section id="dmPanel" class="dm-panel" hidden>
+  <div class="dm-inner">
+    <img class="dm-image" src="JMC-12機車專用室內外電瓶充電器.jpg" alt="JMC-12B DM">
+    <div class="dm-actions">
+      <button id="dmPrintBtn" class="dm-action-btn" type="button">列印</button>
+      <button id="dmBackBtn" class="dm-action-btn dm-back-btn" type="button">返回 JMC-12B</button>
+    </div>
+  </div>
+</section>
 
 <script>
 /* =========================
